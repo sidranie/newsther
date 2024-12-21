@@ -55,6 +55,8 @@ public class PersonController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> removePerson(@PathVariable("id") Long id) {
+        // TODO Block deletion if he owns at least one channel
+        // TODO Remove linked subscriptions
         service.deleteById(id);
         return ResponseEntity.noContent().build();
     }
