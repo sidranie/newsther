@@ -1,4 +1,4 @@
-package fr.sidranie.newsther.controllers;
+package fr.sidranie.newsther.controllers.api;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,7 +21,7 @@ import fr.sidranie.newsther.mappers.PersonMapper;
 import fr.sidranie.newsther.services.PersonService;
 
 @RestController
-@RequestMapping("/people")
+@RequestMapping("/api/people")
 public class PersonController {
 
     private final PersonService service;

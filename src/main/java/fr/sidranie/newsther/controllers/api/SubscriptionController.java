@@ -1,4 +1,4 @@
-package fr.sidranie.newsther.controllers;
+package fr.sidranie.newsther.controllers.api;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,7 +18,7 @@ import fr.sidranie.newsther.mappers.SubscriptionMapper;
 import fr.sidranie.newsther.services.SubscriptionService;
 
 @RestController
-@RequestMapping("/subscriptions")
+@RequestMapping("/api/subscriptions")
 public class SubscriptionController {
 
     private final SubscriptionService subscriptionService;
