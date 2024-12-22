@@ -13,7 +13,7 @@ import fr.sidranie.newsther.services.NewsletterService;
 @Service
 public class NewsletterServiceImpl implements NewsletterService {
 
-    private NewsletterRepository repository;
+    private final NewsletterRepository repository;
 
     public NewsletterServiceImpl(NewsletterRepository repository) {
         this.repository = repository;

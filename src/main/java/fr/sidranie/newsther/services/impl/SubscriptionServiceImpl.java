@@ -16,9 +16,9 @@ import fr.sidranie.newsther.services.SubscriptionService;
 @Service
 public class SubscriptionServiceImpl implements SubscriptionService {
 
-    private SubscriptionRepository repository;
-    private PersonService personService;
-    private NewsletterService newsletterService;
+    private final SubscriptionRepository repository;
+    private final PersonService personService;
+    private final NewsletterService newsletterService;
 
     public SubscriptionServiceImpl(SubscriptionRepository repository,
                                    PersonService personService,
@@ -31,6 +31,11 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     @Override
     public Optional<Subscription> findById(Long id) {
         return repository.findById(id);
+    }
+
+    @Override
+    public Optional<Subscription> findByPersonIdAndNewsletterId(Long personId, Long newsletterId) {
+        return repository.findByPersonIdAndNewsletterId(personId, newsletterId);
     }
 
     @Override

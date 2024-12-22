@@ -21,7 +21,7 @@ import fr.sidranie.newsther.services.SubscriptionService;
 @RequestMapping("/subscriptions")
 public class SubscriptionController {
 
-    private SubscriptionService subscriptionService;
+    private final SubscriptionService subscriptionService;
 
     public SubscriptionController(SubscriptionService subscriptionService) {
         this.subscriptionService = subscriptionService;
@@ -30,6 +30,14 @@ public class SubscriptionController {
     @GetMapping("/{id}")
     public ResponseEntity<FullSubscriptionDto> findById(@PathVariable("id") Long id) {
         return subscriptionService.findById(id)
+                .map(SubscriptionMapper::subscriptionToFullSubscriptionDto)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping
+    public ResponseEntity<FullSubscriptionDto> findByPersonIdAndNewsletterId(@RequestBody IdsIdentifiedSubscriptionDto idSubscription) {
+        return subscriptionService.findByPersonIdAndNewsletterId(idSubscription.getPersonId(), idSubscription.getNewsletterId())
                 .map(SubscriptionMapper::subscriptionToFullSubscriptionDto)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());

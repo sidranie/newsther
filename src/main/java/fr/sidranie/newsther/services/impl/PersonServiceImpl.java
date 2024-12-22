@@ -12,6 +12,7 @@ import fr.sidranie.newsther.services.PersonService;
 
 @Service
 public class PersonServiceImpl implements PersonService {
+
     private final PersonRepository repository;
 
     public PersonServiceImpl(PersonRepository repository) {
