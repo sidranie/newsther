@@ -3,12 +3,10 @@ package fr.sidranie.newsther.dtos.subscription;
 import java.time.Instant;
 
 import fr.sidranie.newsther.dtos.newsletter.ShortNewsletterDto;
-import fr.sidranie.newsther.dtos.person.ShortPersonDto;
 
-public class FullSubscriptionDto {
+public class ShortNewsletterSubscriptionDto {
     private Long id;
     private Instant since;
-    private ShortPersonDto person;
     private ShortNewsletterDto newsletter;
 
     public Long getId() {
@@ -25,14 +23,6 @@ public class FullSubscriptionDto {
 
     public void setSince(Instant since) {
         this.since = since;
-    }
-
-    public ShortPersonDto getPerson() {
-        return person;
-    }
-
-    public void setPerson(ShortPersonDto person) {
-        this.person = person;
     }
 
     public ShortNewsletterDto getNewsletter() {

@@ -9,11 +9,15 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 
 import java.time.Instant;
 
 @Entity
-@Table(name = "subscriptions")
+@Table(name = "subscriptions",
+        uniqueConstraints =
+        @UniqueConstraint(name = "unique_subscription_person_newsletter",
+                columnNames = {"person_id", "newsletter_id"}))
 public class Subscription {
     @Id
     @Column(nullable = false, unique = true)
@@ -26,6 +30,10 @@ public class Subscription {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "person_id", nullable = false)
     private Person person;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "newsletter_id", nullable = false)
+    private Newsletter newsletter;
 
     public Long getId() {
         return id;
@@ -49,5 +57,13 @@ public class Subscription {
 
     public void setPerson(Person person) {
         this.person = person;
+    }
+
+    public Newsletter getNewsletter() {
+        return newsletter;
+    }
+
+    public void setNewsletter(Newsletter newsletter) {
+        this.newsletter = newsletter;
     }
 }

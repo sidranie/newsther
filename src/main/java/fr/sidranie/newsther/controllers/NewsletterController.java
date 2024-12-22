@@ -14,6 +14,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import fr.sidranie.newsther.dtos.newsletter.CreateNewsletterDto;
+import fr.sidranie.newsther.dtos.newsletter.FullNewsletterDto;
 import fr.sidranie.newsther.dtos.newsletter.ShortNewsletterDto;
 import fr.sidranie.newsther.entities.Newsletter;
 import fr.sidranie.newsther.mappers.NewsletterMapper;
@@ -37,9 +38,9 @@ public class NewsletterController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ShortNewsletterDto> findById(@PathVariable("id") Long id) {
+    public ResponseEntity<FullNewsletterDto> findById(@PathVariable("id") Long id) {
         return service.findById(id)
-                .map(NewsletterMapper::newsletterToShortNewsletterDto)
+                .map(NewsletterMapper::newsletterToFullNewsletterDto)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }

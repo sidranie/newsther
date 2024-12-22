@@ -2,7 +2,7 @@ package fr.sidranie.newsther.dtos.person;
 
 import java.util.Set;
 
-import fr.sidranie.newsther.dtos.subscription.ShortSubscriptionDto;
+import fr.sidranie.newsther.dtos.subscription.ShortNewsletterSubscriptionDto;
 
 public class FullPersonDto {
     private Long id;
@@ -11,7 +11,7 @@ public class FullPersonDto {
     private String password;
     private String givenName;
     private String familyName;
-    private Set<ShortSubscriptionDto> subscriptions;
+    private Set<ShortNewsletterSubscriptionDto> subscriptions;
 
     public Long getId() {
         return id;
@@ -61,11 +61,11 @@ public class FullPersonDto {
         this.familyName = familyName;
     }
 
-    public Set<ShortSubscriptionDto> getSubscriptions() {
+    public Set<ShortNewsletterSubscriptionDto> getSubscriptions() {
         return subscriptions;
     }
 
-    public void setSubscriptions(Set<ShortSubscriptionDto> subscriptions) {
+    public void setSubscriptions(Set<ShortNewsletterSubscriptionDto> subscriptions) {
         this.subscriptions = subscriptions;
     }
 }

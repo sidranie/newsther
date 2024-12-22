@@ -36,7 +36,8 @@ public class SubscriptionController {
 
     @PostMapping
     public ResponseEntity<FullSubscriptionDto> subscribePersonToNewsletter(@RequestBody NewSubscriptionDto newSubscriptionDto) {
-        Subscription subscription = subscriptionService.subscribePersonToNewsletter(newSubscriptionDto.getPersonId());
+        Subscription subscription = subscriptionService.subscribePersonToNewsletter(newSubscriptionDto.getPersonId(),
+                newSubscriptionDto.getNewsletterId());
         FullSubscriptionDto fullSubscriptionDto = SubscriptionMapper.subscriptionToFullSubscriptionDto(subscription);
         return ResponseEntity.created(URI.create("/subscriptions/" + subscription.getId()))
                 .body(fullSubscriptionDto);

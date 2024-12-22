@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import fr.sidranie.newsther.dtos.person.CreatePersonDto;
 import fr.sidranie.newsther.dtos.person.FullPersonDto;
 import fr.sidranie.newsther.dtos.person.ShortPersonDto;
-import fr.sidranie.newsther.dtos.subscription.ShortSubscriptionDto;
+import fr.sidranie.newsther.dtos.subscription.ShortNewsletterSubscriptionDto;
 import fr.sidranie.newsther.entities.Person;
 
 public class PersonMapper {
@@ -43,9 +43,9 @@ public class PersonMapper {
         fullPersonDto.setGivenName(person.getGivenName());
         fullPersonDto.setFamilyName(person.getFamilyName());
 
-        Set<ShortSubscriptionDto> subscriptions = person.getSubscriptions()
+        Set<ShortNewsletterSubscriptionDto> subscriptions = person.getSubscriptions()
                 .stream()
-                .map(SubscriptionMapper::subscriptionToShortSubscriptionDto)
+                .map(SubscriptionMapper::subscriptionToShortNewsletterSubscriptionDto)
                 .collect(Collectors.toSet());
         fullPersonDto.setSubscriptions(subscriptions);
         return fullPersonDto;
