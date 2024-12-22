@@ -1,6 +1,6 @@
 package fr.sidranie.newsther.dtos.subscription;
 
-public class NewSubscriptionDto {
+public class IdsIdentifiedSubscriptionDto {
     private Long personId;
     private Long newsletterId;
 

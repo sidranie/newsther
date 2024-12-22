@@ -51,7 +51,14 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     }
 
     @Override
-    public void unsubscribePersonFromNewsletter(Long personId) {
-        // Not implemented
+    public void unsubscribePersonFromNewsletter(Long personId, Long newsletterId) {
+        Subscription subscription = repository.findByPersonIdAndNewsletterId(personId, newsletterId)
+                .orElseThrow(IllegalArgumentException::new);
+        repository.delete(subscription);
+    }
+
+    @Override
+    public void unsubscribePersonFromNewsletter(Long id) {
+        repository.deleteById(id);
     }
 }

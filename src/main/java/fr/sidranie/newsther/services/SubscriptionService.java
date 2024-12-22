@@ -9,5 +9,7 @@ public interface SubscriptionService {
 
     Subscription subscribePersonToNewsletter(Long personId, Long newsletterId);
 
-    void unsubscribePersonFromNewsletter(Long personId);
+    void unsubscribePersonFromNewsletter(Long personId, Long newsletterId);
+
+    void unsubscribePersonFromNewsletter(Long id);
 }
