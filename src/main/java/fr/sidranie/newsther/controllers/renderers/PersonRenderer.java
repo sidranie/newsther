@@ -4,6 +4,10 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
+import fr.sidranie.newsther.dtos.newsletter.ShortNewsletterDto;
+import fr.sidranie.newsther.dtos.subscription.ShortNewsletterSubscriptionDto;
+import fr.sidranie.newsther.entities.Subscription;
+import fr.sidranie.newsther.mappers.SubscriptionMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -64,5 +68,19 @@ public class PersonRenderer {
     public String deletePerson(@PathVariable("id") Long id) {
         service.deleteById(id);
         return "redirect:/people";
+    }
+
+    @GetMapping("/{id}/subscriptions")
+    public String listSubscriptionsForPerson(@PathVariable("id") Long id, Model model) {
+        Person person = service.findById(id).orElseThrow(IllegalArgumentException::new);
+        model.addAttribute("username", person.getUsername());
+
+        List<ShortNewsletterSubscriptionDto> subscriptions = person.getSubscriptions()
+                .stream()
+                .map(SubscriptionMapper::subscriptionToShortNewsletterSubscriptionDto)
+                .sorted(Comparator.comparing(ShortNewsletterSubscriptionDto::getSince).reversed())
+                .toList();
+        model.addAttribute("subscriptions", subscriptions);
+        return "listSubscriptionsForPerson";
     }
 }

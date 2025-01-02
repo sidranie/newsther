@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Newsther</title>
+</head>
+<body>
+<h1 th:text="|List subscriptions for ${username}|"></h1>
+<table>
+  <tbody>
+  <tr th:each="subscription: ${subscription}">
+    <td th:text="${subscription.id}"/>
+    <td th:text="${subscription.since}"/>
+    <td th:text="${subscription.newsletter.name}"/>
+  </tr>
+  </tbody>
+</table>
+</body>
+</html>
