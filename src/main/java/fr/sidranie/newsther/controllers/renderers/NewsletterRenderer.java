@@ -1,4 +1,4 @@
-package fr.sidranie.newsther.controllers.renderers.renderers;
+package fr.sidranie.newsther.controllers.renderers;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
