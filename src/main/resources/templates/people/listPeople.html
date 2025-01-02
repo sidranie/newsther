@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Newsther</title>
+</head>
+<body>
+<h1>List people</h1>
+<a href="/people/create"><button>Create</button></a>
+<table>
+  <tbody>
+  <tr th:each="person: ${people}">
+    <td th:text="${person.id}"/>
+    <td th:text="${person.username}"/>
+    <td th:text="${person.givenName}"/>
+    <td th:text="${person.familyName}"/>
+    <td th:text="${person.email}"/>
+    <td th:text="${person.password}"/>
+    <td><a th:href="@{/people/{id}(id=${person.id})}"><button>View</button></a></td>
+  </tr>
+  </tbody>
+</table>
+</body>
+</html>
