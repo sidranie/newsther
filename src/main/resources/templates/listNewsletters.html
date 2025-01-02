@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <title>Newsther</title>
 </head>
+<body>
+<h1>List newsletters</h1>
+<a href="/newsletters/create"><button>Create</button></a>
 <table>
     <tbody>
     <tr th:each="newsletter: ${newsletters}">
@@ -12,4 +15,5 @@
     </tr>
     </tbody>
 </table>
+</body>
 </html>

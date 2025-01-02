@@ -1,11 +1,13 @@
 package fr.sidranie.newsther.controllers.renderers;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import fr.sidranie.newsther.services.NewsletterService;
 
 @Controller
+@RequestMapping("/newsletters")
 public class NewsletterRenderer {
 
     private final NewsletterService service;
@@ -14,9 +16,9 @@ public class NewsletterRenderer {
         this.service = service;
     }
 
-    @RequestMapping("/newsletters")
-    public String allNewsletters() {
-        
+    @RequestMapping
+    public String allNewsletters(Model model) {
+        model.addAttribute("newsletters", service.findAll());
         return "listNewsletters";
     }
 }
