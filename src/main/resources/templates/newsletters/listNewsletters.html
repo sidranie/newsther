@@ -12,6 +12,7 @@
     <tr th:each="newsletter: ${newsletters}">
         <td th:text="${newsletter.id}"/>
         <td th:text="${newsletter.name}"/>
+        <td><a th:href="@{/newsletters/{id}(id=${newsletter.id})}"><button>View</button></a></td>
     </tr>
     </tbody>
 </table>

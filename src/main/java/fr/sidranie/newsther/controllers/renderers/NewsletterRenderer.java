@@ -35,7 +35,7 @@ public class NewsletterRenderer {
                 .map(NewsletterMapper::newsletterToShortNewsletterDto)
                 .toList();
         model.addAttribute("newsletters", newsletters);
-        return "listNewsletters";
+        return "newsletters/listNewsletters";
     }
 
     @GetMapping("/{id}")
@@ -44,17 +44,23 @@ public class NewsletterRenderer {
                 .map(NewsletterMapper::newsletterToFullNewsletterDto)
                 .orElseThrow(IllegalAccessError::new);
         model.addAttribute("newsletter", fullNewsletterDto);
-        return "viewNewsletter";
+        return "newsletters/viewNewsletter";
     }
 
     @GetMapping("/create")
     public String createNewsletterForm() {
-        return "createNewsletterForm";
+        return "newsletters/createNewsletterForm";
     }
 
     @PostMapping("/create")
     public String createNewsletterAction(CreateNewsletterDto createNewsletterDto) {
         service.createNewsletter(NewsletterMapper.createNewsletterDtoToNewsletter(createNewsletterDto));
+        return "redirect:/newsletters";
+    }
+
+    @PostMapping("/{id}/delete")
+    public String deleteNewsletter(@PathVariable("id") Long id) {
+        service.deleteNewsletter(id);
         return "redirect:/newsletters";
     }
 }

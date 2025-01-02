@@ -6,6 +6,9 @@
 </head>
 <body>
 <h1 th:text="${newsletter.name}"></h1>
+<form method="post" th:action="@{/newsletters/{id}/delete(id=${newsletter.id})}">
+    <button type="submit">Delete</button>
+</form>
 <a href="/newsletters">Back to newsletters</a>
 </body>
 </html>
