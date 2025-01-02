@@ -1,5 +1,8 @@
 package fr.sidranie.newsther.controllers.renderers;
 
+import java.util.Comparator;
+import java.util.List;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -7,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import fr.sidranie.newsther.dtos.newsletter.CreateNewsletterDto;
+import fr.sidranie.newsther.entities.Newsletter;
 import fr.sidranie.newsther.mappers.NewsletterMapper;
 import fr.sidranie.newsther.services.NewsletterService;
 
@@ -22,7 +26,11 @@ public class NewsletterRenderer {
 
     @GetMapping
     public String allNewsletters(Model model) {
-        model.addAttribute("newsletters", service.findAll());
+        List<Newsletter> newsletters = service.findAll()
+                .stream()
+                .sorted(Comparator.comparing(Newsletter::getName))
+                .toList();
+        model.addAttribute("newsletters", newsletters);
         return "listNewsletters";
     }
 
