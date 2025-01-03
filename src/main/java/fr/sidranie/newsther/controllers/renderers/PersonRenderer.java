@@ -73,7 +73,7 @@ public class PersonRenderer {
     @GetMapping("/{id}/subscriptions")
     public String listSubscriptionsForPerson(@PathVariable("id") Long id, Model model) {
         Person person = service.findById(id).orElseThrow(IllegalArgumentException::new);
-        model.addAttribute("username", person.getUsername());
+        model.addAttribute("person", PersonMapper.personToShortPersonDto(person));
 
         List<ShortNewsletterSubscriptionDto> subscriptions = person.getSubscriptions()
                 .stream()
@@ -81,6 +81,6 @@ public class PersonRenderer {
                 .sorted(Comparator.comparing(ShortNewsletterSubscriptionDto::getSince).reversed())
                 .toList();
         model.addAttribute("subscriptions", subscriptions);
-        return "listSubscriptionsForPerson";
+        return "people/listSubscriptionsForPerson";
     }
 }

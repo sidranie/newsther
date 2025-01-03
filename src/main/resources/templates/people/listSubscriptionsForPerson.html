@@ -5,15 +5,27 @@
     <title>Newsther</title>
 </head>
 <body>
-<h1 th:text="|List subscriptions for ${username}|"></h1>
+<h1 th:text="|List subscriptions for ${person.username}|"></h1>
 <table>
   <tbody>
-  <tr th:each="subscription: ${subscription}">
+  <tr th:each="subscription: ${subscriptions}">
     <td th:text="${subscription.id}"/>
     <td th:text="${subscription.since}"/>
     <td th:text="${subscription.newsletter.name}"/>
+    <td>
+        <form action="/unsubscribe" method="post">
+            <input type="hidden" name="personId" th:value="${person.id}"/>
+            <input type="hidden" name="newsletterId" th:value="${subscription.newsletter.id}"/>
+            <button type="submit">Unsubscribe</button>
+        </form>
+    </td>
   </tr>
   </tbody>
 </table>
+<form action="/subscribe" method="post">
+    <input type="text" name="newsletterId" placeholder="Newsletter id"/>
+    <input type="text" name="personId" placeholder="Person id" th:value="${person.id}"/>
+    <button type="submit">Subscribe</button>
+</form>
 </body>
 </html>
