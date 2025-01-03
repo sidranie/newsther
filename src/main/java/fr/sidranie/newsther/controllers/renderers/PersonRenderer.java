@@ -73,7 +73,8 @@ public class PersonRenderer {
     @GetMapping("/{id}/subscriptions")
     public String listSubscriptionsForPerson(@PathVariable("id") Long id, Model model) {
         Person person = service.findById(id).orElseThrow(IllegalArgumentException::new);
-        model.addAttribute("person", PersonMapper.personToShortPersonDto(person));
+        FullPersonDto personDto = PersonMapper.personToFullPersonDto(person);
+        model.addAttribute("person", personDto);
 
         List<ShortNewsletterSubscriptionDto> subscriptions = person.getSubscriptions()
                 .stream()

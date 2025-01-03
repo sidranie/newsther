@@ -6,9 +6,9 @@
 </head>
 <body>
 <h1 th:text="|List subscriptions for ${person.username}|"></h1>
-<table>
+<table th:fragment="subscriptionsList">
   <tbody>
-  <tr th:each="subscription: ${subscriptions}">
+  <tr th:each="subscription: ${person.subscriptions}">
     <td th:text="${subscription.id}"/>
     <td th:text="${subscription.since}"/>
     <td th:text="${subscription.newsletter.name}"/>

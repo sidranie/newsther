@@ -10,5 +10,6 @@
 <p>Email: <span th:text="${person.email}"></span></p>
 <p>Password: <span th:text="${person.password}"></span></p>
 <form th:action="@{/people/{id}/delete(id=${person.id})}" method="post"><button>Delete</button></form>
+<div th:insert="~{people/listSubscriptionsForPerson :: subscriptionsList}"></div>
 </body>
 </html>

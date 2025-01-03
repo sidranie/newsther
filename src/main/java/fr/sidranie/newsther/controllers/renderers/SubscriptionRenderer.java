@@ -19,13 +19,13 @@ public class SubscriptionRenderer {
     public String subscribe(IdsIdentifiedSubscriptionDto idsIdentifiedSubscriptionDto) {
         service.subscribePersonToNewsletter(idsIdentifiedSubscriptionDto.getPersonId(),
                 idsIdentifiedSubscriptionDto.getNewsletterId());
-        return "redirect:/people/" + idsIdentifiedSubscriptionDto.getPersonId() + "/subscriptions";
+        return "redirect:/people/" + idsIdentifiedSubscriptionDto.getPersonId();
     }
 
     @PostMapping("/unsubscribe")
     public String unsubscribe(IdsIdentifiedSubscriptionDto idsIdentifiedSubscriptionDto) {
         service.unsubscribePersonFromNewsletter(idsIdentifiedSubscriptionDto.getPersonId(),
                 idsIdentifiedSubscriptionDto.getNewsletterId());
-        return "redirect:/people/" + idsIdentifiedSubscriptionDto.getPersonId() + "/subscriptions";
+        return "redirect:/people/" + idsIdentifiedSubscriptionDto.getPersonId();
     }
 }
