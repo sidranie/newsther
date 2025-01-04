@@ -1,5 +1,8 @@
 package fr.sidranie.newsther.services.impl;
 
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -14,9 +17,11 @@ import fr.sidranie.newsther.services.PersonService;
 public class PersonServiceImpl implements PersonService {
 
     private final PersonRepository repository;
+    private final PasswordEncoder passwordEncoder;
 
-    public PersonServiceImpl(PersonRepository repository) {
+    public PersonServiceImpl(PersonRepository repository, PasswordEncoder passwordEncoder) {
         this.repository = repository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -32,13 +37,33 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
+    public Optional<Person> findByUsernameOrEmail(String identifier) {
+        return repository.findByUsernameOrEmail(identifier, identifier);
+    }
+
+    @Override
     public void registerPerson(Person person) {
         person.setId(null);
+        person.setPassword(passwordEncoder.encode(person.getPassword()));
         repository.save(person);
     }
 
     @Override
     public void deleteById(Long id) {
         repository.deleteById(id);
+    }
+
+    @Override
+    public UserDetails updatePassword(UserDetails user, String newPassword) {
+        Person person = findByUsernameOrEmail(user.getUsername())
+                .orElseThrow(IllegalArgumentException::new);
+        person.setPassword(passwordEncoder.encode(newPassword));
+        repository.save(person);
+        return person;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return findByUsernameOrEmail(username).orElse(null);
     }
 }
