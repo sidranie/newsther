@@ -17,11 +17,11 @@ public class SecurityConfiguration {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http.cors(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
+                .httpBasic(Customizer.withDefaults())
                 .authorizeHttpRequests(request ->
                         request.requestMatchers("/api/**").permitAll()
-                                .requestMatchers("/login*", "/perform_login").permitAll()
+                                .requestMatchers("/login*", "/perform_login", "/people/create").permitAll()
                                 .requestMatchers("/**").authenticated())
-                .httpBasic(Customizer.withDefaults())
                 .formLogin(httpSecurityFormLoginConfigurer ->
                         httpSecurityFormLoginConfigurer.loginPage("/login.html")
                                 .loginProcessingUrl("/perform_login"))
