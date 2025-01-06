@@ -19,8 +19,15 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request ->
                         request.requestMatchers("/api/**").permitAll()
+                                .requestMatchers("/login*", "/perform_login").permitAll()
                                 .requestMatchers("/**").authenticated())
                 .httpBasic(Customizer.withDefaults())
+                .formLogin(httpSecurityFormLoginConfigurer ->
+                        httpSecurityFormLoginConfigurer.loginPage("/login.html")
+                                .loginProcessingUrl("/perform_login"))
+                .logout(httpSecurityLogoutConfigurer ->
+                        httpSecurityLogoutConfigurer.logoutUrl("/perform_logout")
+                                .deleteCookies("JSESSIONID"))
                 .build();
     }
 
