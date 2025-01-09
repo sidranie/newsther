@@ -6,14 +6,14 @@
 </head>
 <body>
 <nav th:fragment="menu">
+    <a href="/">Home</a>
     <a href="/newsletters">Newsletters</a>
     <div sec:authorize="isAnonymous()">
         <a href="/login">Login</a>
         <a href="/people/create">Register</a>
     </div>
-
     <div sec:authorize="isAuthenticated()">
-        <p>Welcome, <span sec:authentication="name"></span></p>
+        <p>Welcome, <a href="/people/me"><span sec:authentication="name"></span></a></p>
         <form action="/perform_logout" method="post">
             <button type="submit">Logout</button>
         </form>

@@ -1,12 +1,10 @@
 package fr.sidranie.newsther.controllers.renderers;
 
+import java.security.Principal;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 
-import fr.sidranie.newsther.dtos.newsletter.ShortNewsletterDto;
 import fr.sidranie.newsther.dtos.subscription.ShortNewsletterSubscriptionDto;
-import fr.sidranie.newsther.entities.Subscription;
 import fr.sidranie.newsther.mappers.SubscriptionMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -50,6 +48,13 @@ public class PersonRenderer {
                 .orElseThrow(IllegalArgumentException::new);
         model.addAttribute("person", fullPersonDto);
         return "people/viewPerson";
+    }
+
+    @GetMapping("/me")
+    public String viewMyProfile(Principal principal) throws IllegalAccessException {
+        Person person = service.findByUsernameOrEmail(principal.getName())
+                .orElseThrow(IllegalAccessException::new);
+        return "redirect:/people/" + person.getId();
     }
 
     @GetMapping("/create")
