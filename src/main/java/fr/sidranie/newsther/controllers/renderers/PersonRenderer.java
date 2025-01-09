@@ -61,7 +61,7 @@ public class PersonRenderer {
     public String createPerson(CreatePersonDto createPersonDto) {
         Person person = PersonMapper.createPersonDtoToPerson(createPersonDto);
         service.registerPerson(person);
-        return "redirect:/people";
+        return "redirect:/login";
     }
 
     @PostMapping("/{id}/delete")

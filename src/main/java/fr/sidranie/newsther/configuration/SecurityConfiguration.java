@@ -22,15 +22,18 @@ public class SecurityConfiguration {
                 .headers(httpSecurityHeadersConfigurer ->
                         httpSecurityHeadersConfigurer.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .authorizeHttpRequests(request ->
-                        request.requestMatchers("/api/**").permitAll()
+                        request.requestMatchers("/").permitAll()
+                                .requestMatchers("/api/**").permitAll()
                                 .requestMatchers("/h2-console", "/h2-console/**").permitAll()
                                 .requestMatchers("/login*", "/perform_login", "/people/create").permitAll()
                                 .requestMatchers("/**").authenticated())
                 .formLogin(httpSecurityFormLoginConfigurer ->
                         httpSecurityFormLoginConfigurer.loginPage("/login.html")
-                                .loginProcessingUrl("/perform_login"))
+                                .loginProcessingUrl("/perform_login")
+                                .defaultSuccessUrl("/home"))
                 .logout(httpSecurityLogoutConfigurer ->
                         httpSecurityLogoutConfigurer.logoutUrl("/perform_logout")
+                                .logoutSuccessUrl("/")
                                 .deleteCookies("JSESSIONID"))
                 .build();
     }
