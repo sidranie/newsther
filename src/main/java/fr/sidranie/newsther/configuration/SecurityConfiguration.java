@@ -30,7 +30,7 @@ public class SecurityConfiguration {
                 .formLogin(httpSecurityFormLoginConfigurer ->
                         httpSecurityFormLoginConfigurer.loginPage("/login.html")
                                 .loginProcessingUrl("/perform_login")
-                                .defaultSuccessUrl("/home"))
+                                .defaultSuccessUrl("/"))
                 .logout(httpSecurityLogoutConfigurer ->
                         httpSecurityLogoutConfigurer.logoutUrl("/perform_logout")
                                 .logoutSuccessUrl("/")
