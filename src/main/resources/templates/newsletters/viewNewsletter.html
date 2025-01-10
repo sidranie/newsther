@@ -6,6 +6,7 @@
 </head>
 <body>
 <h1 th:text="${newsletter.name}"></h1>
+<p th:text="${newsletter.creator.username}"></p>
 <form method="post" th:action="@{/newsletters/{id}/delete(id=${newsletter.id})}">
     <button type="submit">Delete</button>
 </form>

@@ -12,6 +12,7 @@ public class FullPersonDto {
     private String password;
     private String givenName;
     private String familyName;
+    private List<ShortNewsletterSubscriptionDto> newsletters;
     private List<ShortNewsletterSubscriptionDto> subscriptions;
 
     public Long getId() {
@@ -60,6 +61,14 @@ public class FullPersonDto {
 
     public void setFamilyName(String familyName) {
         this.familyName = familyName;
+    }
+
+    public List<ShortNewsletterSubscriptionDto> getNewsletters() {
+        return newsletters;
+    }
+
+    public void setNewsletters(List<ShortNewsletterSubscriptionDto> newsletters) {
+        this.newsletters = newsletters;
     }
 
     public List<ShortNewsletterSubscriptionDto> getSubscriptions() {

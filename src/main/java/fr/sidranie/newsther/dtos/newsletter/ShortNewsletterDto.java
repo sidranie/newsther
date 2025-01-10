@@ -1,9 +1,12 @@
 package fr.sidranie.newsther.dtos.newsletter;
 
+import fr.sidranie.newsther.dtos.person.ShortPersonDto;
+
 public class ShortNewsletterDto {
     private Long id;
     private String name;
     private String slug;
+    private ShortPersonDto creator;
 
     public Long getId() {
         return id;
@@ -29,4 +32,11 @@ public class ShortNewsletterDto {
         this.slug = slug;
     }
 
+    public ShortPersonDto getCreator() {
+        return creator;
+    }
+
+    public void setCreator(ShortPersonDto creator) {
+        this.creator = creator;
+    }
 }

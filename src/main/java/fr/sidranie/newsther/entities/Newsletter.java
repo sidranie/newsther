@@ -6,6 +6,8 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
@@ -25,6 +27,10 @@ public class Newsletter {
 
     @Column(nullable = false, unique = true)
     private String slug;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "creator_id", nullable = false)
+    private Person creator;
 
     @OneToMany(mappedBy = "newsletter", fetch = FetchType.LAZY)
     private Set<Subscription> subscriptions;
@@ -51,6 +57,14 @@ public class Newsletter {
 
     public void setSlug(String slug) {
         this.slug = slug;
+    }
+
+    public Person getCreator() {
+        return creator;
+    }
+
+    public void setCreator(Person creator) {
+        this.creator = creator;
     }
 
     public Set<Subscription> getSubscriptions() {

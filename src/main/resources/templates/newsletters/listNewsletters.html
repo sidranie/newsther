@@ -13,6 +13,10 @@
         <td th:text="${newsletter.id}"></td>
         <td th:text="${newsletter.name}"></td>
         <td th:text="${newsletter.slug}"></td>
+        <td>
+            <a th:href="@{/people/{username}(username=${newsletter.creator.username})}"
+               th:text="${newsletter.creator.username}"></a>
+        </td>
         <td><a th:href="@{/newsletters/{slug}(slug=${newsletter.slug})}"><button>View</button></a></td>
     </tr>
     </tbody>

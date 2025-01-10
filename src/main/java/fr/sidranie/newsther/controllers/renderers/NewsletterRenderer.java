@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.security.Principal;
 import java.util.Comparator;
 import java.util.List;
 
@@ -16,15 +17,19 @@ import fr.sidranie.newsther.dtos.newsletter.ShortNewsletterDto;
 import fr.sidranie.newsther.entities.Newsletter;
 import fr.sidranie.newsther.mappers.NewsletterMapper;
 import fr.sidranie.newsther.services.NewsletterService;
+import fr.sidranie.newsther.services.PersonService;
 
 @Controller
 @RequestMapping("/newsletters")
 public class NewsletterRenderer {
 
     private final NewsletterService service;
+    private final PersonService personService;
 
-    public NewsletterRenderer(NewsletterService service) {
+    public NewsletterRenderer(NewsletterService service,
+                              PersonService personService) {
         this.service = service;
+        this.personService = personService;
     }
 
     @GetMapping
@@ -53,8 +58,17 @@ public class NewsletterRenderer {
     }
 
     @PostMapping("/create")
-    public String createNewsletterAction(CreateNewsletterDto createNewsletterDto) {
-        service.createNewsletter(NewsletterMapper.createNewsletterDtoToNewsletter(createNewsletterDto));
+    public String createNewsletterAction(CreateNewsletterDto createNewsletterDto, Principal principal) throws IllegalAccessException {
+        if (principal == null) {
+            throw new IllegalAccessException();
+        }
+
+        Newsletter newsletter = NewsletterMapper.createNewsletterDtoToNewsletter(createNewsletterDto);
+
+        newsletter.setCreator(personService.findByUsernameOrEmail(principal.getName())
+                .orElseThrow(IllegalAccessError::new));
+
+        service.createNewsletter(newsletter);
         return "redirect:/newsletters";
     }
 

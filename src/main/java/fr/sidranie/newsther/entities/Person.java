@@ -6,6 +6,8 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import org.springframework.security.core.GrantedAuthority;
@@ -37,6 +39,9 @@ public class Person implements UserDetails {
 
     @Column(nullable = false)
     private String familyName;
+
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = Newsletter.class)
+    private Set<Newsletter> newsletters;
 
     @OneToMany(mappedBy = "person", fetch = FetchType.LAZY)
     private Set<Subscription> subscriptions;
