@@ -7,6 +7,7 @@ import fr.sidranie.newsther.dtos.subscription.ShortPersonSubscriptionDto;
 public class FullNewsletterDto {
     private Long id;
     private String name;
+    private String slug;
     private Set<ShortPersonSubscriptionDto> subscriptions;
 
     public Long getId() {
@@ -23,6 +24,14 @@ public class FullNewsletterDto {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getSlug() {
+        return slug;
+    }
+
+    public void setSlug(String slug) {
+        this.slug = slug;
     }
 
     public Set<ShortPersonSubscriptionDto> getSubscriptions() {

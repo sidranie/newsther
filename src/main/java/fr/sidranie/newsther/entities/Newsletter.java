@@ -23,6 +23,9 @@ public class Newsletter {
     @Column(nullable = false, unique = true)
     private String name;
 
+    @Column(nullable = false, unique = true)
+    private String slug;
+
     @OneToMany(mappedBy = "newsletter", fetch = FetchType.LAZY)
     private Set<Subscription> subscriptions;
 
@@ -40,6 +43,14 @@ public class Newsletter {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getSlug() {
+        return slug;
+    }
+
+    public void setSlug(String slug) {
+        this.slug = slug;
     }
 
     public Set<Subscription> getSubscriptions() {

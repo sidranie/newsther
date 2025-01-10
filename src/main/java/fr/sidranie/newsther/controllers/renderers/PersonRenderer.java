@@ -41,9 +41,9 @@ public class PersonRenderer {
         return "people/listPeople";
     }
 
-    @GetMapping("/{id}")
-    public String viewPerson(@PathVariable("id") Long id, Model model) {
-        FullPersonDto fullPersonDto = service.findById(id)
+    @GetMapping("/{username}")
+    public String viewPerson(@PathVariable("username") String username, Model model) {
+        FullPersonDto fullPersonDto = service.findByUsernameOrEmail(username)
                 .map(PersonMapper::personToFullPersonDto)
                 .orElseThrow(IllegalArgumentException::new);
         model.addAttribute("person", fullPersonDto);
@@ -52,9 +52,10 @@ public class PersonRenderer {
 
     @GetMapping("/me")
     public String viewMyProfile(Principal principal) throws IllegalAccessException {
-        Person person = service.findByUsernameOrEmail(principal.getName())
-                .orElseThrow(IllegalAccessException::new);
-        return "redirect:/people/" + person.getId();
+        if (principal == null) {
+            throw new IllegalAccessException();
+        }
+        return "redirect:/people/" + principal.getName();
     }
 
     @GetMapping("/create")

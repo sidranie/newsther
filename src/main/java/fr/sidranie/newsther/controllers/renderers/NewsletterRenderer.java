@@ -38,9 +38,9 @@ public class NewsletterRenderer {
         return "newsletters/listNewsletters";
     }
 
-    @GetMapping("/{id}")
-    public String viewNewsletter(@PathVariable("id") Long id, Model model) {
-        FullNewsletterDto fullNewsletterDto = service.findById(id)
+    @GetMapping("/{slug}")
+    public String viewNewsletter(@PathVariable("slug") String slug, Model model) {
+        FullNewsletterDto fullNewsletterDto = service.findBySlug(slug)
                 .map(NewsletterMapper::newsletterToFullNewsletterDto)
                 .orElseThrow(IllegalAccessError::new);
         model.addAttribute("newsletter", fullNewsletterDto);

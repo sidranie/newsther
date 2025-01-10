@@ -16,7 +16,7 @@
     <td th:text="${person.familyName}"/>
     <td th:text="${person.email}"/>
     <td th:text="${person.password}"/>
-    <td><a th:href="@{/people/{id}(id=${person.id})}"><button>View</button></a></td>
+    <td><a th:href="@{/people/{username}(username=${person.username})}"><button>View</button></a></td>
   </tr>
   </tbody>
 </table>

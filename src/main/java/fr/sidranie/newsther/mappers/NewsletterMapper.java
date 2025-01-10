@@ -15,6 +15,7 @@ public class NewsletterMapper {
         ShortNewsletterDto shortNewsletterDto = new ShortNewsletterDto();
         shortNewsletterDto.setId(newsletter.getId());
         shortNewsletterDto.setName(newsletter.getName());
+        shortNewsletterDto.setSlug(newsletter.getSlug());
         return shortNewsletterDto;
     }
 
@@ -22,6 +23,7 @@ public class NewsletterMapper {
         FullNewsletterDto fullNewsletterDto = new FullNewsletterDto();
         fullNewsletterDto.setId(newsletter.getId());
         fullNewsletterDto.setName(newsletter.getName());
+        fullNewsletterDto.setSlug(newsletter.getSlug());
 
         Set<ShortPersonSubscriptionDto> subscriptions = newsletter.getSubscriptions()
                 .stream()

@@ -37,9 +37,9 @@ public class NewsletterController {
                 .collect(Collectors.toSet()));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<FullNewsletterDto> findById(@PathVariable("id") Long id) {
-        return service.findById(id)
+    @GetMapping("/{slug}")
+    public ResponseEntity<FullNewsletterDto> findById(@PathVariable("slug") String slug) {
+        return service.findBySlug(slug)
                 .map(NewsletterMapper::newsletterToFullNewsletterDto)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());

@@ -3,6 +3,7 @@ package fr.sidranie.newsther.dtos.newsletter;
 public class ShortNewsletterDto {
     private Long id;
     private String name;
+    private String slug;
 
     public Long getId() {
         return id;
@@ -19,4 +20,13 @@ public class ShortNewsletterDto {
     public void setName(String name) {
         this.name = name;
     }
+
+    public String getSlug() {
+        return slug;
+    }
+
+    public void setSlug(String slug) {
+        this.slug = slug;
+    }
+
 }

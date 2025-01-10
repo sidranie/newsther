@@ -10,6 +10,8 @@ public interface NewsletterService {
 
     Optional<Newsletter> findById(Long id);
 
+    Optional<Newsletter> findBySlug(String slug);
+
     void createNewsletter(Newsletter newsletter);
 
     void deleteNewsletter(Long id);
