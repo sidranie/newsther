@@ -48,7 +48,7 @@ public class NewsletterController {
     @PostMapping
     public ResponseEntity<ShortNewsletterDto> createNewsletter(@RequestBody CreateNewsletterDto createNewsletterDto) {
         Newsletter newsletter = NewsletterMapper.createNewsletterDtoToNewsletter(createNewsletterDto);
-        service.createNewsletter(newsletter);
+        service.createNewsletter(newsletter, null); // TODO Get principal
         return ResponseEntity.created(URI.create("/newsletters/" + newsletter.getId()))
                 .body(NewsletterMapper.newsletterToShortNewsletterDto(newsletter));
     }

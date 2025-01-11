@@ -65,10 +65,7 @@ public class NewsletterRenderer {
 
         Newsletter newsletter = NewsletterMapper.createNewsletterDtoToNewsletter(createNewsletterDto);
 
-        newsletter.setCreator(personService.findByUsernameOrEmail(principal.getName())
-                .orElseThrow(IllegalAccessError::new));
-
-        service.createNewsletter(newsletter);
+        service.createNewsletter(newsletter, principal);
         return "redirect:/newsletters";
     }
 

@@ -2,6 +2,7 @@ package fr.sidranie.newsther.services.impl;
 
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.text.Normalizer;
 import java.util.HashSet;
 import java.util.Locale;
@@ -12,14 +13,17 @@ import java.util.regex.Pattern;
 import fr.sidranie.newsther.entities.Newsletter;
 import fr.sidranie.newsther.repositories.NewsletterRepository;
 import fr.sidranie.newsther.services.NewsletterService;
+import fr.sidranie.newsther.services.PersonService;
 
 @Service
 public class NewsletterServiceImpl implements NewsletterService {
 
     private final NewsletterRepository repository;
+    private final PersonService personService;
 
-    public NewsletterServiceImpl(NewsletterRepository repository) {
+    public NewsletterServiceImpl(NewsletterRepository repository, PersonService personService) {
         this.repository = repository;
+        this.personService = personService;
     }
 
     @Override
@@ -40,8 +44,10 @@ public class NewsletterServiceImpl implements NewsletterService {
     }
 
     @Override
-    public void createNewsletter(Newsletter newsletter) {
+    public void createNewsletter(Newsletter newsletter, Principal principal) {
         newsletter.setId(null);
+        newsletter.setCreator(personService.findByUsernameOrEmail(principal.getName())
+                .orElseThrow(IllegalAccessError::new));
         newsletter.setSlug(nameToSlug(newsletter.getName()));
         repository.save(newsletter);
     }

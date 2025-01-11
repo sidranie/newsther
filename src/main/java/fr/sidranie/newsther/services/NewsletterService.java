@@ -1,5 +1,6 @@
 package fr.sidranie.newsther.services;
 
+import java.security.Principal;
 import java.util.Optional;
 import java.util.Set;
 
@@ -12,7 +13,7 @@ public interface NewsletterService {
 
     Optional<Newsletter> findBySlug(String slug);
 
-    void createNewsletter(Newsletter newsletter);
+    void createNewsletter(Newsletter newsletter, Principal principal);
 
     void deleteNewsletter(Long id);
 }
