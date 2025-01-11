@@ -35,6 +35,9 @@ public class Newsletter {
     @OneToMany(mappedBy = "newsletter", fetch = FetchType.LAZY)
     private Set<Subscription> subscriptions;
 
+    @OneToMany(mappedBy = "newsletter", fetch = FetchType.LAZY)
+    private Set<News> news;
+
     public Long getId() {
         return id;
     }
@@ -73,5 +76,13 @@ public class Newsletter {
 
     public void setSubscriptions(Set<Subscription> subscriptions) {
         this.subscriptions = subscriptions;
+    }
+
+    public Set<News> getNews() {
+        return news;
+    }
+
+    public void setNews(Set<News> news) {
+        this.news = news;
     }
 }
