@@ -8,8 +8,17 @@
 <h1 th:text="${newsletter.name}"></h1>
 <a th:href="@{/people/{username}(username=${newsletter.creator.username})}"
    th:text="${newsletter.creator.username}"></a>
-<form method="post" th:action="@{/subscriptions/{slug}/subscribe(slug=${newsletter.slug})}">
+<form
+        method="post"
+        th:action="@{/subscriptions/{slug}/subscribe(slug=${newsletter.slug})}"
+>
     <button type="submit">Subscribe</button>
+</form> <!-- TODO Condition of an attribute subscribed (boolean) to add -->
+<form
+        method="post"
+        th:action="@{/subscriptions/{slug}/unsubscribe(slug=${newsletter.slug})}"
+>
+    <button type="submit">Unsubscribe</button>
 </form>
 <form method="post" th:action="@{/newsletters/{id}/delete(id=${newsletter.id})}">
     <!-- TODO Only display/allow newsletter deletion for creator -->
