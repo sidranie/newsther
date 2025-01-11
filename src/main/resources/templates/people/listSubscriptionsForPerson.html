@@ -7,20 +7,18 @@
 <body>
 <h1 th:text="|List subscriptions for ${person.username}|"></h1>
 <table th:fragment="subscriptionsList">
-  <tbody>
-  <tr th:each="subscription: ${person.subscriptions}">
-    <td th:text="${subscription.id}"></td>
-    <td th:text="${subscription.since}"></td>
-    <td th:text="${subscription.newsletter.name}"></td>
-    <td>
-        <form action="/unsubscribe" method="post">
-            <input type="hidden" name="personId" th:value="${person.id}"/>
-            <input type="hidden" name="newsletterId" th:value="${subscription.newsletter.id}"/>
-            <button type="submit">Unsubscribe</button>
-        </form>
-    </td>
-  </tr>
-  </tbody>
+    <tbody>
+    <tr th:each="subscription: ${person.subscriptions}">
+        <td th:text="${subscription.id}"></td>
+        <td th:text="${subscription.since}"></td>
+        <td th:text="${subscription.newsletter.name}"></td>
+        <td>
+            <form th:action="@{/subscriptions/{slug}/unsubscribe(slug=${subscription.newsletter.slug})}" method="post">
+                <button type="submit">Unsubscribe</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
 </table>
 <form action="/subscribe" method="post">
     <input type="text" name="newsletterId" placeholder="Newsletter id"/>

@@ -1,8 +1,8 @@
 package fr.sidranie.newsther.dtos.person;
 
 import java.util.List;
-import java.util.Set;
 
+import fr.sidranie.newsther.dtos.newsletter.ShortNewsletterDto;
 import fr.sidranie.newsther.dtos.subscription.ShortNewsletterSubscriptionDto;
 
 public class FullPersonDto {
@@ -12,7 +12,7 @@ public class FullPersonDto {
     private String password;
     private String givenName;
     private String familyName;
-    private List<ShortNewsletterSubscriptionDto> newsletters;
+    private List<ShortNewsletterDto> newsletters;
     private List<ShortNewsletterSubscriptionDto> subscriptions;
 
     public Long getId() {
@@ -63,11 +63,11 @@ public class FullPersonDto {
         this.familyName = familyName;
     }
 
-    public List<ShortNewsletterSubscriptionDto> getNewsletters() {
+    public List<ShortNewsletterDto> getNewsletters() {
         return newsletters;
     }
 
-    public void setNewsletters(List<ShortNewsletterSubscriptionDto> newsletters) {
+    public void setNewsletters(List<ShortNewsletterDto> newsletters) {
         this.newsletters = newsletters;
     }
 

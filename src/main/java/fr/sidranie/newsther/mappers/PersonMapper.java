@@ -3,9 +3,8 @@ package fr.sidranie.newsther.mappers;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
+import fr.sidranie.newsther.dtos.newsletter.ShortNewsletterDto;
 import fr.sidranie.newsther.dtos.person.CreatePersonDto;
 import fr.sidranie.newsther.dtos.person.FullPersonDto;
 import fr.sidranie.newsther.dtos.person.ShortPersonDto;
@@ -45,12 +44,20 @@ public class PersonMapper {
         fullPersonDto.setGivenName(person.getGivenName());
         fullPersonDto.setFamilyName(person.getFamilyName());
 
+        List<ShortNewsletterDto> newsletters = person.getNewsletters()
+                .stream()
+                .map(NewsletterMapper::newsletterToShortNewsletterDto)
+                .sorted(Comparator.comparing(ShortNewsletterDto::getName))
+                .toList();
+        fullPersonDto.setNewsletters(newsletters);
+
         List<ShortNewsletterSubscriptionDto> subscriptions = person.getSubscriptions()
                 .stream()
                 .map(SubscriptionMapper::subscriptionToShortNewsletterSubscriptionDto)
                 .sorted(Comparator.comparing(ShortNewsletterSubscriptionDto::getSince).reversed())
                 .toList();
         fullPersonDto.setSubscriptions(subscriptions);
+
         return fullPersonDto;
     }
 }

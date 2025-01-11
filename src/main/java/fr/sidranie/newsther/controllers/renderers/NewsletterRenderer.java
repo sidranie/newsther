@@ -63,6 +63,7 @@ public class NewsletterRenderer {
             throw new IllegalAccessException();
         }
 
+        // TODO Trim newsletter name
         Newsletter newsletter = NewsletterMapper.createNewsletterDtoToNewsletter(createNewsletterDto);
 
         service.createNewsletter(newsletter, principal);

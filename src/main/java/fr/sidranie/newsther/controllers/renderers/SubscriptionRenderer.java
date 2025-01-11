@@ -1,31 +1,34 @@
 package fr.sidranie.newsther.controllers.renderers;
 
-import fr.sidranie.newsther.dtos.subscription.IdsIdentifiedSubscriptionDto;
-import fr.sidranie.newsther.services.SubscriptionService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.security.Principal;
+
+import fr.sidranie.newsther.services.SubscriptionService;
+
 @Controller
+@RequestMapping("/subscriptions")
 public class SubscriptionRenderer {
 
-    private SubscriptionService service;
+    private final SubscriptionService service;
 
     public SubscriptionRenderer(SubscriptionService service) {
         this.service = service;
     }
 
-    @PostMapping("/subscribe")
-    public String subscribe(IdsIdentifiedSubscriptionDto idsIdentifiedSubscriptionDto) {
-        service.subscribePersonToNewsletter(idsIdentifiedSubscriptionDto.getPersonId(),
-                idsIdentifiedSubscriptionDto.getNewsletterId());
-        return "redirect:/people/" + idsIdentifiedSubscriptionDto.getPersonId();
+    @PostMapping("/{newsletterSlug}/subscribe")
+    public String subscribe(@PathVariable("newsletterSlug") String slug, Principal principal, HttpServletRequest request) throws IllegalAccessException {
+        service.subscribePersonToNewsletter(principal, slug);
+        return "redirect:" + request.getHeader("Referer");
     }
 
-    @PostMapping("/unsubscribe")
-    public String unsubscribe(IdsIdentifiedSubscriptionDto idsIdentifiedSubscriptionDto) {
-        service.unsubscribePersonFromNewsletter(idsIdentifiedSubscriptionDto.getPersonId(),
-                idsIdentifiedSubscriptionDto.getNewsletterId());
-        return "redirect:/people/" + idsIdentifiedSubscriptionDto.getPersonId();
+    @PostMapping("/{newsletterSlug}/unsubscribe")
+    public String unsubscribe(@PathVariable("newsletterSlug") String slug, Principal principal, HttpServletRequest request) throws IllegalAccessException {
+        service.unsubscribePersonFromNewsletter(principal, slug);
+        return "redirect:" + request.getHeader("Referer");
     }
 }

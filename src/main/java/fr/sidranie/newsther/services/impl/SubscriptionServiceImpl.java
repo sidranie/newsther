@@ -2,6 +2,7 @@ package fr.sidranie.newsther.services.impl;
 
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.time.Instant;
 import java.util.Optional;
 
@@ -56,10 +57,28 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     }
 
     @Override
+    public Subscription subscribePersonToNewsletter(Principal principal, String slug) throws IllegalAccessException {
+        Person person = personService.findByUsernameOrEmail(principal.getName())
+                .orElseThrow(IllegalAccessException::new);
+        Newsletter newsletter = newsletterService.findBySlug(slug)
+                .orElseThrow(IllegalArgumentException::new);
+        return subscribePersonToNewsletter(person.getId(), newsletter.getId());
+    }
+
+    @Override
     public void unsubscribePersonFromNewsletter(Long personId, Long newsletterId) {
         Subscription subscription = repository.findByPersonIdAndNewsletterId(personId, newsletterId)
                 .orElseThrow(IllegalArgumentException::new);
         repository.delete(subscription);
+    }
+
+    @Override
+    public void unsubscribePersonFromNewsletter(Principal principal, String slug) throws IllegalAccessException {
+        Person person = personService.findByUsernameOrEmail(principal.getName())
+                .orElseThrow(IllegalAccessException::new);
+        Newsletter newsletter = newsletterService.findBySlug(slug)
+                .orElseThrow(IllegalArgumentException::new);
+        unsubscribePersonFromNewsletter(person.getId(), newsletter.getId());
     }
 
     @Override

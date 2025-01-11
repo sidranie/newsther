@@ -6,8 +6,13 @@
 </head>
 <body>
 <h1 th:text="${newsletter.name}"></h1>
-<p th:text="${newsletter.creator.username}"></p>
+<a th:href="@{/people/{username}(username=${newsletter.creator.username})}"
+   th:text="${newsletter.creator.username}"></a>
+<form method="post" th:action="@{/subscriptions/{slug}/subscribe(slug=${newsletter.slug})}">
+    <button type="submit">Subscribe</button>
+</form>
 <form method="post" th:action="@{/newsletters/{id}/delete(id=${newsletter.id})}">
+    <!-- TODO Only display/allow newsletter deletion for creator -->
     <button type="submit">Delete</button>
 </form>
 <a href="/newsletters">Back to newsletters</a>

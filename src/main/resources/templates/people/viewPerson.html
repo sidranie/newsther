@@ -9,7 +9,21 @@
 <p>Username: <span th:text="${person.username}"></span></p>
 <p>Email: <span th:text="${person.email}"></span></p>
 <p>Password: <span th:text="${person.password}"></span></p>
-<form th:action="@{/people/{id}/delete(id=${person.id})}" method="post"><button>Delete</button></form>
+<form th:action="@{/people/{id}/delete(id=${person.id})}" method="post">
+    <button>Delete</button>
+</form>
+<table>
+    <thead>
+    <tr>
+        <td>Name</td>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="newsletter: ${person.newsletters}">
+        <td><a th:href="@{/newsletters/{slug}(slug=${newsletter.slug})}" th:text="${newsletter.name}"></a></td>
+    </tr>
+    </tbody>
+</table>
 <div th:insert="~{people/listSubscriptionsForPerson :: subscriptionsList}"></div>
 </body>
 </html>
