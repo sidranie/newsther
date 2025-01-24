@@ -28,7 +28,7 @@ public class SecurityConfiguration {
                                 .requestMatchers("/login*", "/perform_login", "/people/create").permitAll()
                                 .requestMatchers("/**").authenticated())
                 .formLogin(httpSecurityFormLoginConfigurer ->
-                        httpSecurityFormLoginConfigurer.loginPage("/login.html")
+                        httpSecurityFormLoginConfigurer.loginPage("/login")
                                 .loginProcessingUrl("/perform_login")
                                 .defaultSuccessUrl("/"))
                 .logout(httpSecurityLogoutConfigurer ->
