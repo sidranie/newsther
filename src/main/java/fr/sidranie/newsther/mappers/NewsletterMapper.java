@@ -1,8 +1,10 @@
 package fr.sidranie.newsther.mappers;
 
-import java.util.Set;
+import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
 
+import fr.sidranie.newsther.dtos.news.ShortNewsDto;
 import fr.sidranie.newsther.dtos.newsletter.CreateNewsletterDto;
 import fr.sidranie.newsther.dtos.newsletter.FullNewsletterDto;
 import fr.sidranie.newsther.dtos.newsletter.ShortNewsletterDto;
@@ -27,10 +29,18 @@ public class NewsletterMapper {
         fullNewsletterDto.setSlug(newsletter.getSlug());
         fullNewsletterDto.setCreator(PersonMapper.personToShortPersonDto(newsletter.getCreator()));
 
-        Set<ShortPersonSubscriptionDto> subscriptions = newsletter.getSubscriptions()
+        List<ShortNewsDto> newsList = newsletter.getNews()
+                .stream()
+                .map(NewsMapper::newsToShortNewsDto)
+                .sorted(Comparator.comparing(ShortNewsDto::getCreationDate).reversed())
+                .toList();
+        fullNewsletterDto.setNewsList(newsList);
+
+        List<ShortPersonSubscriptionDto> subscriptions = newsletter.getSubscriptions()
                 .stream()
                 .map(SubscriptionMapper::subscriptionToShortPersonSubscriptionDto)
-                .collect(Collectors.toSet());
+                .sorted(Comparator.comparing(ShortPersonSubscriptionDto::getId))
+                .collect(Collectors.toList());
         fullNewsletterDto.setSubscriptions(subscriptions);
 
         return fullNewsletterDto;

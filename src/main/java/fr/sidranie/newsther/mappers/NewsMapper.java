@@ -12,6 +12,7 @@ public class NewsMapper {
         shortNews.setId(news.getId());
         shortNews.setTitle(news.getTitle());
         shortNews.setContent(news.getContent());
+        shortNews.setCreationDate(news.getCreationDate());
         return shortNews;
     }
 
@@ -20,6 +21,7 @@ public class NewsMapper {
         fullNews.setId(news.getId());
         fullNews.setTitle(news.getTitle());
         fullNews.setContent(news.getContent());
+        fullNews.setCreationDate(news.getCreationDate());
         fullNews.setNewsletter(NewsletterMapper.newsletterToShortNewsletterDto(news.getNewsletter()));
         return fullNews;
     }

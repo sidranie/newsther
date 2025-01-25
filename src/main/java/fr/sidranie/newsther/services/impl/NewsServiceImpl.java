@@ -1,5 +1,6 @@
 package fr.sidranie.newsther.services.impl;
 
+import java.time.Instant;
 import java.util.Optional;
 import java.util.Set;
 
@@ -30,6 +31,7 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     public void createNews(News createNews) {
+        createNews.setCreationDate(Instant.now());
         repository.save(createNews);
     }
 }

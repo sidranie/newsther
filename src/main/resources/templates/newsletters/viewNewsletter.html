@@ -24,6 +24,26 @@
     <!-- TODO Only display/allow newsletter deletion for creator -->
     <button type="submit">Delete</button>
 </form>
+<h2>News</h2>
+<a th:href="@{/news/create?newsletterId={id}(id=${newsletter.id})}"><button>Create</button></a>
+<table>
+    <thead>
+    <tr>
+        <td>Id</td>
+        <td>Title</td>
+        <td>Creation date</td>
+        <td>Send date</td>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="news: ${newsletter.newsList}">
+        <td th:text="${news.id}"></td>
+        <td><a th:href="@{/news/{id}(id=${news.id})}" th:text="${news.title}"></a></td>
+        <td th:text="${news.creationDate}"></td>
+        <td th:text="${news.sendDate}"></td>
+    </tr>
+    </tbody>
+</table>
 <a href="/newsletters">Back to newsletters</a>
 </body>
 </html>

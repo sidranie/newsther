@@ -1,7 +1,8 @@
 package fr.sidranie.newsther.dtos.newsletter;
 
-import java.util.Set;
+import java.util.List;
 
+import fr.sidranie.newsther.dtos.news.ShortNewsDto;
 import fr.sidranie.newsther.dtos.person.ShortPersonDto;
 import fr.sidranie.newsther.dtos.subscription.ShortPersonSubscriptionDto;
 
@@ -10,7 +11,8 @@ public class FullNewsletterDto {
     private String name;
     private String slug;
     private ShortPersonDto creator;
-    private Set<ShortPersonSubscriptionDto> subscriptions;
+    private List<ShortNewsDto> newsList;
+    private List<ShortPersonSubscriptionDto> subscriptions;
 
     public Long getId() {
         return id;
@@ -44,11 +46,19 @@ public class FullNewsletterDto {
         this.creator = creator;
     }
 
-    public Set<ShortPersonSubscriptionDto> getSubscriptions() {
+    public List<ShortNewsDto> getNewsList() {
+        return newsList;
+    }
+
+    public void setNewsList(List<ShortNewsDto> newsList) {
+        this.newsList = newsList;
+    }
+
+    public List<ShortPersonSubscriptionDto> getSubscriptions() {
         return subscriptions;
     }
 
-    public void setSubscriptions(Set<ShortPersonSubscriptionDto> subscriptions) {
+    public void setSubscriptions(List<ShortPersonSubscriptionDto> subscriptions) {
         this.subscriptions = subscriptions;
     }
 }

@@ -1,5 +1,7 @@
 package fr.sidranie.newsther.dtos.news;
 
+import java.time.Instant;
+
 import fr.sidranie.newsther.dtos.newsletter.ShortNewsletterDto;
 
 public class FullNewsDto {
@@ -7,6 +9,7 @@ public class FullNewsDto {
     private Long id;
     private String title;
     private String content;
+    private Instant creationDate;
     private ShortNewsletterDto newsletter;
 
     public Long getId() {
@@ -31,6 +34,14 @@ public class FullNewsDto {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public Instant getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(Instant creationDate) {
+        this.creationDate = creationDate;
     }
 
     public ShortNewsletterDto getNewsletter() {

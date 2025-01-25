@@ -1,5 +1,7 @@
 package fr.sidranie.newsther.entities;
 
+import java.time.Instant;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -23,6 +25,9 @@ public class News {
 
     @Column(nullable = false)
     private String content;
+
+    @Column(nullable = false)
+    private Instant creationDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "newsletter_id", nullable = false)
@@ -50,6 +55,14 @@ public class News {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public Instant getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(Instant creationDate) {
+        this.creationDate = creationDate;
     }
 
     public Newsletter getNewsletter() {
