@@ -1,16 +1,8 @@
 package fr.sidranie.newsther.entities;
 
-import java.time.Instant;
+import jakarta.persistence.*;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import java.time.Instant;
 
 @Entity
 @Table(name = "news")
@@ -28,6 +20,9 @@ public class News {
 
     @Column(nullable = false)
     private Instant creationDate;
+
+    @Column(nullable = true)
+    private Instant sendDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "newsletter_id", nullable = false)
@@ -65,11 +60,30 @@ public class News {
         this.creationDate = creationDate;
     }
 
+    public Instant getSendDate() {
+        return sendDate;
+    }
+
+    public void setSendDate(Instant sendDate) {
+        this.sendDate = sendDate;
+    }
+
     public Newsletter getNewsletter() {
         return newsletter;
     }
 
     public void setNewsletter(Newsletter newsletter) {
         this.newsletter = newsletter;
+    }
+
+    public String toEmail() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("<h1>")
+                .append(title)
+                .append("</h1>")
+                .append("<p>")
+                .append(content)
+                .append("</p>");
+        return builder.toString();
     }
 }
