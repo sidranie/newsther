@@ -40,6 +40,22 @@ public class EmailServiceImpl implements EmailService {
         this.personService = personService;
     }
 
+    public void sendEmail(String to, String subject, String template, Context context) throws MessagingException {
+        MimeMessage mimeMessage = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
+
+        // Process the template with the given context
+        String htmlContent = templateEngine.process(template, context);
+
+        // Set email properties
+        helper.setTo(to);
+        helper.setSubject(subject);
+        helper.setText(htmlContent, true); // Set true for HTML content
+
+        // Send the email
+        mailSender.send(mimeMessage);
+    }
+
     @Override
     public void sendEmailToEveryone() {
         List<News> sentNews = new ArrayList<>();
