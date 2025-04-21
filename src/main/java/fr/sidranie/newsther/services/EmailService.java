@@ -1,5 +1,7 @@
 package fr.sidranie.newsther.services;
 
+import jakarta.mail.MessagingException;
+
 public interface EmailService {
-    void sendEmailToEveryone();
+    void sendEmailToEveryone() throws MessagingException;
 }

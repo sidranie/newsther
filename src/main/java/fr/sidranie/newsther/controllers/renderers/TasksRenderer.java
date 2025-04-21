@@ -1,6 +1,7 @@
 package fr.sidranie.newsther.controllers.renderers;
 
 import fr.sidranie.newsther.services.EmailService;
+import jakarta.mail.MessagingException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,7 +17,7 @@ public class TasksRenderer {
     }
 
     @PostMapping("/send-news")
-    public void sendNews() {
+    public void sendNews() throws MessagingException {
         emailService.sendEmailToEveryone();
     }
 }

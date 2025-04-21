@@ -6,8 +6,8 @@
 </head>
 <body>
   <div th:each="news: ${newsList}">
-    <h2 th:text="news.title"></h2>
-    <p th:text="news.content"></p>
+    <h2 th:text="${news.title}"></h2>
+    <p th:text="${news.content}"></p>
   </div>
 </body>
 </html>
