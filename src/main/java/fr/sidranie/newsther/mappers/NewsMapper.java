@@ -28,8 +28,8 @@ public class NewsMapper {
 
     public static News createNewsDtoToNews(CreateNewsDto createNewsDto) {
         News news = new News();
-        news.setTitle(createNewsDto.getTitle());
-        news.setContent(createNewsDto.getContent());
+        news.setTitle(createNewsDto.getTitle().trim());
+        news.setContent(createNewsDto.getContent().trim());
         return news;
     }
 }

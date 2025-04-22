@@ -48,7 +48,7 @@ public class NewsletterMapper {
 
     public static Newsletter createNewsletterDtoToNewsletter(CreateNewsletterDto createNewsletterDto) {
         Newsletter newsletter = new Newsletter();
-        newsletter.setName(createNewsletterDto.getName());
+        newsletter.setName(createNewsletterDto.getName().trim());
         return newsletter;
     }
 }
