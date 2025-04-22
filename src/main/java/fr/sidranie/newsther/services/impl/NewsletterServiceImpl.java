@@ -11,7 +11,9 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import fr.sidranie.newsther.entities.Newsletter;
+import fr.sidranie.newsther.repositories.NewsRepository;
 import fr.sidranie.newsther.repositories.NewsletterRepository;
+import fr.sidranie.newsther.repositories.SubscriptionRepository;
 import fr.sidranie.newsther.services.NewsletterService;
 import fr.sidranie.newsther.services.PersonService;
 
@@ -20,10 +22,17 @@ public class NewsletterServiceImpl implements NewsletterService {
 
     private final NewsletterRepository repository;
     private final PersonService personService;
+    private final NewsRepository newsRepository;
+    private final SubscriptionRepository subscriptionRepository;
 
-    public NewsletterServiceImpl(NewsletterRepository repository, PersonService personService) {
+    public NewsletterServiceImpl(NewsletterRepository repository,
+                                    PersonService personService,
+                                    NewsRepository newsRepository,
+                                    SubscriptionRepository subscriptionRepository) {
         this.repository = repository;
         this.personService = personService;
+        this.newsRepository = newsRepository;
+        this.subscriptionRepository = subscriptionRepository;
     }
 
     @Override
@@ -54,6 +63,8 @@ public class NewsletterServiceImpl implements NewsletterService {
 
     @Override
     public void deleteNewsletter(Long id) {
+        newsRepository.deleteByNewsletterId(id);
+        subscriptionRepository.deleteByNewsletterId(id);
         repository.deleteById(id);
     }
 

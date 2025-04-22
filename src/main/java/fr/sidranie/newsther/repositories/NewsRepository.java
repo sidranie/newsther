@@ -11,4 +11,6 @@ import fr.sidranie.newsther.entities.News;
 public interface NewsRepository extends CrudRepository<News, Long> {
 
     Set<News> findByNewsletterId(Long newsletterId);
+
+    void deleteByNewsletterId(Long newsletterId);
 }
