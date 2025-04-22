@@ -8,7 +8,7 @@ import fr.sidranie.newsther.dtos.subscription.ShortPersonSubscriptionDto;
 
 public class FullNewsletterDto {
     private Long id;
-    private String name;
+    private String title;
     private String slug;
     private ShortPersonDto creator;
     private List<ShortNewsDto> newsList;
@@ -22,12 +22,12 @@ public class FullNewsletterDto {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getSlug() {

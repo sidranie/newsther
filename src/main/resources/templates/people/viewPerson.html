@@ -20,7 +20,7 @@
     </thead>
     <tbody>
     <tr th:each="newsletter: ${person.newsletters}">
-        <td><a th:href="@{/newsletters/{slug}(slug=${newsletter.slug})}" th:text="${newsletter.name}"></a></td>
+        <td><a th:href="@{/newsletters/{slug}(slug=${newsletter.slug})}" th:text="${newsletter.title}"></a></td>
     </tr>
     </tbody>
 </table>

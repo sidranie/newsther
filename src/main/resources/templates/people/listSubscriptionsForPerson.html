@@ -11,7 +11,7 @@
     <tr th:each="subscription: ${person.subscriptions}">
         <td th:text="${subscription.id}"></td>
         <td th:text="${subscription.since}"></td>
-        <td th:text="${subscription.newsletter.name}"></td>
+        <td th:text="${subscription.newsletter.title}"></td>
         <td>
             <form th:action="@{/subscriptions/{slug}/unsubscribe(slug=${subscription.newsletter.slug})}" method="post">
                 <button type="submit">Unsubscribe</button>

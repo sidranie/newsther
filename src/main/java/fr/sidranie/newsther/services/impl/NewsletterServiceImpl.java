@@ -57,7 +57,7 @@ public class NewsletterServiceImpl implements NewsletterService {
         newsletter.setId(null);
         newsletter.setCreator(personService.findByUsernameOrEmail(principal.getName())
                 .orElseThrow(IllegalAccessError::new));
-        newsletter.setSlug(nameToSlug(newsletter.getName()));
+        newsletter.setSlug(titleToSlug(newsletter.getTitle()));
         repository.save(newsletter);
     }
 
@@ -68,10 +68,10 @@ public class NewsletterServiceImpl implements NewsletterService {
         repository.deleteById(id);
     }
 
-    private String nameToSlug(String name) {
+    private String titleToSlug(String title) {
         final Pattern NONLATIN = Pattern.compile("[^\\w-]");
         final Pattern WHITESPACE = Pattern.compile("[\\s]");
-        String nowhitespace = WHITESPACE.matcher(name).replaceAll("-");
+        String nowhitespace = WHITESPACE.matcher(title).replaceAll("-");
         String normalized = Normalizer.normalize(nowhitespace, Normalizer.Form.NFD);
         String slug = NONLATIN.matcher(normalized).replaceAll("");
         return slug.toLowerCase(Locale.FRANCE);

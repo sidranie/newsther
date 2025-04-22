@@ -5,7 +5,7 @@
     <title>Newsther</title>
 </head>
 <body>
-<h1 th:text="${newsletter.name}"></h1>
+<h1 th:text="${newsletter.title}"></h1>
 <a th:href="@{/people/{username}(username=${newsletter.creator.username})}"
    th:text="${newsletter.creator.username}"></a>
 <form

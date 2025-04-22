@@ -36,7 +36,7 @@ public class NewsletterRenderer {
     public String allNewsletters(Model model) {
         List<ShortNewsletterDto> newsletters = service.findAll()
                 .stream()
-                .sorted(Comparator.comparing(Newsletter::getName))
+                .sorted(Comparator.comparing(Newsletter::getTitle))
                 .map(NewsletterMapper::newsletterToShortNewsletterDto)
                 .toList();
         model.addAttribute("newsletters", newsletters);

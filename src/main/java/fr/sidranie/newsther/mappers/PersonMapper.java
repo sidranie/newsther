@@ -47,7 +47,7 @@ public class PersonMapper {
         List<ShortNewsletterDto> newsletters = person.getNewsletters()
                 .stream()
                 .map(NewsletterMapper::newsletterToShortNewsletterDto)
-                .sorted(Comparator.comparing(ShortNewsletterDto::getName))
+                .sorted(Comparator.comparing(ShortNewsletterDto::getTitle))
                 .toList();
         fullPersonDto.setNewsletters(newsletters);
 

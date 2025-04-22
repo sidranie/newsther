@@ -8,7 +8,7 @@
 <h1 th:text="${news.title}"></h1>
 <a
         th:href="@{/newsletters/{slug}(slug=${news.newsletter.slug})}"
-        th:text="${news.newsletter.name}"
+        th:text="${news.newsletter.title}"
 ></a>
 <p th:text="${news.content}"></p>
 <p th:text="${news.creationDate}"></p>

@@ -16,7 +16,7 @@ public class NewsletterMapper {
     public static ShortNewsletterDto newsletterToShortNewsletterDto(Newsletter newsletter) {
         ShortNewsletterDto shortNewsletterDto = new ShortNewsletterDto();
         shortNewsletterDto.setId(newsletter.getId());
-        shortNewsletterDto.setName(newsletter.getName());
+        shortNewsletterDto.setTitle(newsletter.getTitle());
         shortNewsletterDto.setSlug(newsletter.getSlug());
         shortNewsletterDto.setCreator(PersonMapper.personToShortPersonDto(newsletter.getCreator()));
         return shortNewsletterDto;
@@ -25,7 +25,7 @@ public class NewsletterMapper {
     public static FullNewsletterDto newsletterToFullNewsletterDto(Newsletter newsletter) {
         FullNewsletterDto fullNewsletterDto = new FullNewsletterDto();
         fullNewsletterDto.setId(newsletter.getId());
-        fullNewsletterDto.setName(newsletter.getName());
+        fullNewsletterDto.setTitle(newsletter.getTitle());
         fullNewsletterDto.setSlug(newsletter.getSlug());
         fullNewsletterDto.setCreator(PersonMapper.personToShortPersonDto(newsletter.getCreator()));
 
@@ -48,7 +48,7 @@ public class NewsletterMapper {
 
     public static Newsletter createNewsletterDtoToNewsletter(CreateNewsletterDto createNewsletterDto) {
         Newsletter newsletter = new Newsletter();
-        newsletter.setName(createNewsletterDto.getName().trim());
+        newsletter.setTitle(createNewsletterDto.getTitle().trim());
         return newsletter;
     }
 }
