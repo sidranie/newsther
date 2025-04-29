@@ -19,6 +19,7 @@ import fr.sidranie.newsther.dtos.person.ShortPersonDto;
 import fr.sidranie.newsther.entities.Person;
 import fr.sidranie.newsther.mappers.PersonMapper;
 import fr.sidranie.newsther.services.PersonService;
+import jakarta.transaction.Transactional;
 
 @Controller
 @RequestMapping("/people")
@@ -71,6 +72,7 @@ public class PersonRenderer {
     }
 
     @PostMapping("/{id}/delete")
+    @Transactional
     public String deletePerson(@PathVariable("id") Long id) {
         service.deleteById(id);
         return "redirect:/people";

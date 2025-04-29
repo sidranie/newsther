@@ -16,4 +16,6 @@ public interface NewsletterService {
     void createNewsletter(Newsletter newsletter, Principal principal);
 
     void deleteNewsletter(Long id);
+
+    void deleteByCreatorId(Long creatorId);
 }

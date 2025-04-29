@@ -11,4 +11,5 @@ import fr.sidranie.newsther.entities.Subscription;
 public interface SubscriptionRepository extends CrudRepository<Subscription, Long> {
     Optional<Subscription> findByPersonIdAndNewsletterId(Long personId, Long newsletterId);
     void deleteByNewsletterId(Long newsletterId);
+    void deleteByPersonId(Long personId);
 }

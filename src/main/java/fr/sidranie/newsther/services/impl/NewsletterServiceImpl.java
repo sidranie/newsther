@@ -13,24 +13,24 @@ import java.util.regex.Pattern;
 import fr.sidranie.newsther.entities.Newsletter;
 import fr.sidranie.newsther.repositories.NewsRepository;
 import fr.sidranie.newsther.repositories.NewsletterRepository;
+import fr.sidranie.newsther.repositories.PersonRepository;
 import fr.sidranie.newsther.repositories.SubscriptionRepository;
 import fr.sidranie.newsther.services.NewsletterService;
-import fr.sidranie.newsther.services.PersonService;
 
 @Service
 public class NewsletterServiceImpl implements NewsletterService {
 
     private final NewsletterRepository repository;
-    private final PersonService personService;
+    private final PersonRepository personRepository;
     private final NewsRepository newsRepository;
     private final SubscriptionRepository subscriptionRepository;
 
     public NewsletterServiceImpl(NewsletterRepository repository,
-                                    PersonService personService,
+                                    PersonRepository personRepository,
                                     NewsRepository newsRepository,
                                     SubscriptionRepository subscriptionRepository) {
         this.repository = repository;
-        this.personService = personService;
+        this.personRepository = personRepository;
         this.newsRepository = newsRepository;
         this.subscriptionRepository = subscriptionRepository;
     }
@@ -55,7 +55,7 @@ public class NewsletterServiceImpl implements NewsletterService {
     @Override
     public void createNewsletter(Newsletter newsletter, Principal principal) {
         newsletter.setId(null);
-        newsletter.setCreator(personService.findByUsernameOrEmail(principal.getName())
+        newsletter.setCreator(personRepository.findByUsernameOrEmail(principal.getName(), principal.getName())
                 .orElseThrow(IllegalAccessError::new));
         newsletter.setSlug(titleToSlug(newsletter.getTitle()));
         repository.save(newsletter);
@@ -66,6 +66,13 @@ public class NewsletterServiceImpl implements NewsletterService {
         newsRepository.deleteByNewsletterId(id);
         subscriptionRepository.deleteByNewsletterId(id);
         repository.deleteById(id);
+    }
+
+    @Override
+    public void deleteByCreatorId(Long creatorId) {
+        repository.findByCreatorId(creatorId).stream()
+            .map(Newsletter::getId)
+            .forEach(this::deleteNewsletter);
     }
 
     private String titleToSlug(String title) {

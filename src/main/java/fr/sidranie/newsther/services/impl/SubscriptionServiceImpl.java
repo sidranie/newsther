@@ -9,23 +9,23 @@ import java.util.Optional;
 import fr.sidranie.newsther.entities.Newsletter;
 import fr.sidranie.newsther.entities.Person;
 import fr.sidranie.newsther.entities.Subscription;
+import fr.sidranie.newsther.repositories.PersonRepository;
 import fr.sidranie.newsther.repositories.SubscriptionRepository;
 import fr.sidranie.newsther.services.NewsletterService;
-import fr.sidranie.newsther.services.PersonService;
 import fr.sidranie.newsther.services.SubscriptionService;
 
 @Service
 public class SubscriptionServiceImpl implements SubscriptionService {
 
     private final SubscriptionRepository repository;
-    private final PersonService personService;
+    private final PersonRepository personRepository;
     private final NewsletterService newsletterService;
 
     public SubscriptionServiceImpl(SubscriptionRepository repository,
-                                   PersonService personService,
+                                   PersonRepository personRepository,
                                    NewsletterService newsletterService) {
         this.repository = repository;
-        this.personService = personService;
+        this.personRepository = personRepository;
         this.newsletterService = newsletterService;
     }
 
@@ -41,7 +41,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
     @Override
     public Subscription subscribePersonToNewsletter(Long personId, Long newsletterId) {
-        Person person = personService.findById(personId)
+        Person person = personRepository.findById(personId)
                 .orElseThrow(IllegalArgumentException::new);
         Newsletter newsletter = newsletterService.findById(newsletterId)
                 .orElseThrow(IllegalArgumentException::new);
@@ -58,7 +58,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
     @Override
     public Subscription subscribePersonToNewsletter(Principal principal, String slug) throws IllegalAccessException {
-        Person person = personService.findByUsernameOrEmail(principal.getName())
+        Person person = personRepository.findByUsernameOrEmail(principal.getName(), principal.getName())
                 .orElseThrow(IllegalAccessException::new);
         Newsletter newsletter = newsletterService.findBySlug(slug)
                 .orElseThrow(IllegalArgumentException::new);
@@ -74,7 +74,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
     @Override
     public void unsubscribePersonFromNewsletter(Principal principal, String slug) throws IllegalAccessException {
-        Person person = personService.findByUsernameOrEmail(principal.getName())
+        Person person = personRepository.findByUsernameOrEmail(principal.getName(), principal.getName())
                 .orElseThrow(IllegalAccessException::new);
         Newsletter newsletter = newsletterService.findBySlug(slug)
                 .orElseThrow(IllegalArgumentException::new);
