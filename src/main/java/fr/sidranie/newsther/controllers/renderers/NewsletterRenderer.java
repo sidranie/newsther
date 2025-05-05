@@ -10,26 +10,21 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import fr.sidranie.newsther.dtos.newsletter.CreateNewsletterDto;
 import fr.sidranie.newsther.dtos.newsletter.FullNewsletterDto;
 import fr.sidranie.newsther.dtos.newsletter.ShortNewsletterDto;
 import fr.sidranie.newsther.entities.Newsletter;
 import fr.sidranie.newsther.mappers.NewsletterMapper;
 import fr.sidranie.newsther.services.NewsletterService;
-import fr.sidranie.newsther.services.PersonService;
 
 @Controller
 @RequestMapping("/newsletters")
 public class NewsletterRenderer {
 
     private final NewsletterService service;
-    private final PersonService personService;
 
-    public NewsletterRenderer(NewsletterService service,
-                              PersonService personService) {
+    public NewsletterRenderer(NewsletterService service) {
         this.service = service;
-        this.personService = personService;
     }
 
     @GetMapping

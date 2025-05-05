@@ -23,6 +23,7 @@ public class SecurityConfiguration {
                         httpSecurityHeadersConfigurer.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .authorizeHttpRequests(request ->
                         request.requestMatchers("/").permitAll()
+                                .requestMatchers("/newsletters", "/newsletters/{slug}").permitAll()
                                 .requestMatchers("/api/**").permitAll()
                                 .requestMatchers("/h2-console", "/h2-console/**").permitAll()
                                 .requestMatchers("/login*", "/perform_login", "/people/create").permitAll()
