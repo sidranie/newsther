@@ -1,5 +1,6 @@
 package fr.sidranie.newsther.controllers.renderers;
 
+import java.security.Principal;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
@@ -15,6 +16,7 @@ import fr.sidranie.newsther.entities.News;
 import fr.sidranie.newsther.entities.Newsletter;
 import fr.sidranie.newsther.mappers.NewsMapper;
 import fr.sidranie.newsther.mappers.NewsletterMapper;
+import fr.sidranie.newsther.repositories.NewsRepository;
 import fr.sidranie.newsther.repositories.NewsletterRepository;
 import fr.sidranie.newsther.services.NewsService;
 
@@ -23,10 +25,14 @@ import fr.sidranie.newsther.services.NewsService;
 public class NewsRenderer {
 
     private final NewsService service;
+    private final NewsRepository repository;
     private final NewsletterRepository newsletterRepository;
 
-    public NewsRenderer(NewsService service, NewsletterRepository newsletterRepository) {
+    public NewsRenderer(NewsService service,
+                        NewsRepository newsRepository,
+                        NewsletterRepository newsletterRepository) {
         this.service = service;
+        this.repository = newsRepository;
         this.newsletterRepository = newsletterRepository;
     }
 
@@ -36,7 +42,7 @@ public class NewsRenderer {
             throw new IllegalArgumentException();
         }
 
-        Set<News> newsList = service.findNewsOfNewsletter(newsletterId);
+        Set<News> newsList = repository.findByNewsletterId(newsletterId);
         List<ShortNewsDto> newsDtoList = newsList.stream()
                 .map(NewsMapper::newsToShortNewsDto)
                 .sorted(Comparator.comparing(ShortNewsDto::getTitle))
@@ -47,7 +53,7 @@ public class NewsRenderer {
 
     @GetMapping("/{id}")
     public String viewNews(@PathVariable("id") Long id, Model model) {
-        FullNewsDto newsDto = NewsMapper.newsToFullNewsDto(service.findById(id)
+        FullNewsDto newsDto = NewsMapper.newsToFullNewsDto(repository.findById(id)
                 .orElseThrow(IllegalArgumentException::new));
         model.addAttribute("news", newsDto);
         return "news/viewNews";
@@ -63,6 +69,19 @@ public class NewsRenderer {
                 newsletterRepository.findById(newsletterId).orElseThrow(IllegalArgumentException::new));
         model.addAttribute("newsletter", newsletter);
         return "news/createNews";
+    }
+
+    @GetMapping("/{id}/edit")
+    public String editNewsForm(@PathVariable("id") Long id, Principal principal, Model model) {
+        News news = repository.findById(id).orElseThrow(IllegalArgumentException::new);
+
+        if (news.getNewsletter().getCreator().getUsername().equals(principal.getName())) {
+            throw new IllegalAccessError();
+        }
+
+        ShortNewsDto newsDto = NewsMapper.newsToShortNewsDto(news);
+        model.addAttribute("news", newsDto);
+        return "news/editNews";
     }
 
     @PostMapping
