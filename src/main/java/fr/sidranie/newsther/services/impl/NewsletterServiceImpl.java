@@ -1,15 +1,11 @@
 package fr.sidranie.newsther.services.impl;
 
-import org.springframework.stereotype.Service;
-
 import java.security.Principal;
 import java.text.Normalizer;
-import java.util.HashSet;
 import java.util.Locale;
-import java.util.Optional;
-import java.util.Set;
 import java.util.regex.Pattern;
 
+import org.springframework.stereotype.Service;
 import fr.sidranie.newsther.entities.Newsletter;
 import fr.sidranie.newsther.repositories.NewsRepository;
 import fr.sidranie.newsther.repositories.NewsletterRepository;
@@ -36,23 +32,6 @@ public class NewsletterServiceImpl implements NewsletterService {
     }
 
     @Override
-    public Set<Newsletter> findAll() {
-        Set<Newsletter> newsletters = new HashSet<>();
-        repository.findAll().forEach(newsletters::add);
-        return newsletters;
-    }
-
-    @Override
-    public Optional<Newsletter> findById(Long id) {
-        return repository.findById(id);
-    }
-
-    @Override
-    public Optional<Newsletter> findBySlug(String slug) {
-        return repository.findBySlug(slug);
-    }
-
-    @Override
     public void createNewsletter(Newsletter newsletter, Principal principal) {
         newsletter.setId(null);
         newsletter.setCreator(personRepository.findByUsernameOrEmail(principal.getName(), principal.getName())
@@ -73,6 +52,14 @@ public class NewsletterServiceImpl implements NewsletterService {
         repository.findByCreatorId(creatorId).stream()
             .map(Newsletter::getId)
             .forEach(this::deleteNewsletter);
+    }
+
+    @Override
+    public Newsletter editNewsletter(Newsletter newsletterTarget, Newsletter newsletterUpdates) {
+        newsletterTarget.setTitle(newsletterUpdates.getTitle());
+        newsletterTarget.setSlug(titleToSlug(newsletterUpdates.getTitle()));
+        repository.save(newsletterTarget);
+        return newsletterTarget;
     }
 
     private String titleToSlug(String title) {

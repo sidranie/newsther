@@ -11,10 +11,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import fr.sidranie.newsther.dtos.newsletter.CreateNewsletterDto;
+import fr.sidranie.newsther.dtos.newsletter.EditNewsletterDto;
 import fr.sidranie.newsther.dtos.newsletter.FullNewsletterDto;
 import fr.sidranie.newsther.dtos.newsletter.ShortNewsletterDto;
 import fr.sidranie.newsther.entities.Newsletter;
 import fr.sidranie.newsther.mappers.NewsletterMapper;
+import fr.sidranie.newsther.repositories.NewsletterRepository;
 import fr.sidranie.newsther.services.NewsletterService;
 
 @Controller
@@ -22,14 +24,16 @@ import fr.sidranie.newsther.services.NewsletterService;
 public class NewsletterRenderer {
 
     private final NewsletterService service;
+    private final NewsletterRepository repository;
 
-    public NewsletterRenderer(NewsletterService service) {
+    public NewsletterRenderer(NewsletterService service, NewsletterRepository repository) {
         this.service = service;
+        this.repository = repository;
     }
 
     @GetMapping
     public String allNewsletters(Model model) {
-        List<ShortNewsletterDto> newsletters = service.findAll()
+        List<ShortNewsletterDto> newsletters = repository.findAll()
                 .stream()
                 .sorted(Comparator.comparing(Newsletter::getTitle))
                 .map(NewsletterMapper::newsletterToShortNewsletterDto)
@@ -40,7 +44,7 @@ public class NewsletterRenderer {
 
     @GetMapping("/{slug}")
     public String viewNewsletter(@PathVariable("slug") String slug, Model model) {
-        FullNewsletterDto fullNewsletterDto = service.findBySlug(slug)
+        FullNewsletterDto fullNewsletterDto = repository.findBySlug(slug)
                 .map(NewsletterMapper::newsletterToFullNewsletterDto)
                 .orElseThrow(IllegalAccessError::new);
         model.addAttribute("newsletter", fullNewsletterDto);
@@ -53,7 +57,8 @@ public class NewsletterRenderer {
     }
 
     @PostMapping("/create")
-    public String createNewsletterAction(CreateNewsletterDto createNewsletterDto, Principal principal) throws IllegalAccessException {
+    public String createNewsletterAction(CreateNewsletterDto createNewsletterDto,
+                                         Principal principal) throws IllegalAccessException {
         if (principal == null) {
             throw new IllegalAccessException();
         }
@@ -62,6 +67,38 @@ public class NewsletterRenderer {
 
         service.createNewsletter(newsletter, principal);
         return "redirect:/newsletters";
+    }
+
+    @GetMapping("/{slug}/edit")
+    public String editNewsletterForm(@PathVariable("slug") String slug, Principal principal, Model model) {
+        FullNewsletterDto fullNewsletterDto = repository.findBySlug(slug)
+                .filter(newsletter -> newsletter.getCreator().getUsername().equals(principal.getName()))
+                .map(NewsletterMapper::newsletterToFullNewsletterDto)
+                .orElseThrow(IllegalAccessError::new);
+        model.addAttribute("newsletter", fullNewsletterDto);
+        return "newsletters/editNewsletter";
+    }
+
+    @PostMapping("/{slug}/edit")
+    public String editNewsletter(@PathVariable("slug") String slug,
+                                 EditNewsletterDto editNewsletterDto,
+                                 Principal principal) throws IllegalAccessException {
+        if (principal == null) {
+            throw new IllegalAccessException();
+        }
+
+        Newsletter newsletter = repository.findBySlug(slug).orElseThrow(IllegalAccessError::new);
+
+        if (!newsletter.getCreator().getUsername().equals(principal.getName())) {
+            throw new IllegalAccessError();
+        }
+
+        Newsletter newsletterUpdates = new Newsletter();
+        newsletterUpdates.setTitle(editNewsletterDto.getTitle());
+
+        Newsletter result = service.editNewsletter(newsletter, newsletterUpdates);
+
+        return "redirect:/newsletters/" + result.getSlug();
     }
 
     @PostMapping("/{id}/delete")

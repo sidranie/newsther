@@ -1,17 +1,16 @@
 package fr.sidranie.newsther.services.impl;
 
-import org.springframework.stereotype.Service;
-
 import java.security.Principal;
 import java.time.Instant;
 import java.util.Optional;
 
+import org.springframework.stereotype.Service;
 import fr.sidranie.newsther.entities.Newsletter;
 import fr.sidranie.newsther.entities.Person;
 import fr.sidranie.newsther.entities.Subscription;
+import fr.sidranie.newsther.repositories.NewsletterRepository;
 import fr.sidranie.newsther.repositories.PersonRepository;
 import fr.sidranie.newsther.repositories.SubscriptionRepository;
-import fr.sidranie.newsther.services.NewsletterService;
 import fr.sidranie.newsther.services.SubscriptionService;
 
 @Service
@@ -19,14 +18,14 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
     private final SubscriptionRepository repository;
     private final PersonRepository personRepository;
-    private final NewsletterService newsletterService;
+    private final NewsletterRepository newsletterRepository;
 
     public SubscriptionServiceImpl(SubscriptionRepository repository,
                                    PersonRepository personRepository,
-                                   NewsletterService newsletterService) {
+                                   NewsletterRepository newsletterRepository) {
         this.repository = repository;
         this.personRepository = personRepository;
-        this.newsletterService = newsletterService;
+        this.newsletterRepository = newsletterRepository;
     }
 
     @Override
@@ -43,7 +42,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     public Subscription subscribePersonToNewsletter(Long personId, Long newsletterId) {
         Person person = personRepository.findById(personId)
                 .orElseThrow(IllegalArgumentException::new);
-        Newsletter newsletter = newsletterService.findById(newsletterId)
+        Newsletter newsletter = newsletterRepository.findById(newsletterId)
                 .orElseThrow(IllegalArgumentException::new);
 
         Subscription subscription = new Subscription();
@@ -60,7 +59,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     public Subscription subscribePersonToNewsletter(Principal principal, String slug) throws IllegalAccessException {
         Person person = personRepository.findByUsernameOrEmail(principal.getName(), principal.getName())
                 .orElseThrow(IllegalAccessException::new);
-        Newsletter newsletter = newsletterService.findBySlug(slug)
+        Newsletter newsletter = newsletterRepository.findBySlug(slug)
                 .orElseThrow(IllegalArgumentException::new);
         return subscribePersonToNewsletter(person.getId(), newsletter.getId());
     }
@@ -76,7 +75,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     public void unsubscribePersonFromNewsletter(Principal principal, String slug) throws IllegalAccessException {
         Person person = personRepository.findByUsernameOrEmail(principal.getName(), principal.getName())
                 .orElseThrow(IllegalAccessException::new);
-        Newsletter newsletter = newsletterService.findBySlug(slug)
+        Newsletter newsletter = newsletterRepository.findBySlug(slug)
                 .orElseThrow(IllegalArgumentException::new);
         unsubscribePersonFromNewsletter(person.getId(), newsletter.getId());
     }

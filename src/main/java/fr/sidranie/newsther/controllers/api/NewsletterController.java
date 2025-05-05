@@ -1,23 +1,17 @@
 package fr.sidranie.newsther.controllers.api;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import java.net.URI;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import fr.sidranie.newsther.dtos.newsletter.CreateNewsletterDto;
 import fr.sidranie.newsther.dtos.newsletter.FullNewsletterDto;
 import fr.sidranie.newsther.dtos.newsletter.ShortNewsletterDto;
 import fr.sidranie.newsther.entities.Newsletter;
 import fr.sidranie.newsther.mappers.NewsletterMapper;
+import fr.sidranie.newsther.repositories.NewsletterRepository;
 import fr.sidranie.newsther.services.NewsletterService;
 
 @RestController
@@ -25,21 +19,23 @@ import fr.sidranie.newsther.services.NewsletterService;
 public class NewsletterController {
 
     private final NewsletterService service;
+    private final NewsletterRepository repository;
 
-    public NewsletterController(NewsletterService service) {
+    public NewsletterController(NewsletterService service, NewsletterRepository repository) {
         this.service = service;
+        this.repository = repository;
     }
 
     @GetMapping
     public ResponseEntity<Set<ShortNewsletterDto>> findAll() {
-        return ResponseEntity.ok(service.findAll().stream()
+        return ResponseEntity.ok(repository.findAll().stream()
                 .map(NewsletterMapper::newsletterToShortNewsletterDto)
                 .collect(Collectors.toSet()));
     }
 
     @GetMapping("/{slug}")
     public ResponseEntity<FullNewsletterDto> findById(@PathVariable("slug") String slug) {
-        return service.findBySlug(slug)
+        return repository.findBySlug(slug)
                 .map(NewsletterMapper::newsletterToFullNewsletterDto)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
