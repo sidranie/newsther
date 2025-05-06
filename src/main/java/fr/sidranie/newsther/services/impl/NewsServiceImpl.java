@@ -34,4 +34,12 @@ public class NewsServiceImpl implements NewsService {
         createNews.setCreationDate(Instant.now());
         repository.save(createNews);
     }
+
+    @Override
+    public News updateNews(News news, News newsUpdates) {
+        news.setTitle(newsUpdates.getTitle());
+        news.setContent(newsUpdates.getContent());
+        repository.save(news);
+        return news;
+    }
 }

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import fr.sidranie.newsther.dtos.news.CreateNewsDto;
+import fr.sidranie.newsther.dtos.news.EditNewsDto;
 import fr.sidranie.newsther.dtos.news.FullNewsDto;
 import fr.sidranie.newsther.dtos.news.ShortNewsDto;
 import fr.sidranie.newsther.dtos.newsletter.ShortNewsletterDto;
@@ -73,15 +74,35 @@ public class NewsRenderer {
 
     @GetMapping("/{id}/edit")
     public String editNewsForm(@PathVariable("id") Long id, Principal principal, Model model) {
-        News news = repository.findById(id).orElseThrow(IllegalArgumentException::new);
+        News news = repository.findById(id)
+                .filter(foundNews -> foundNews.getSendDate() == null)
+                .orElseThrow(IllegalArgumentException::new);
 
-        if (news.getNewsletter().getCreator().getUsername().equals(principal.getName())) {
+        if (!news.getNewsletter().getCreator().getUsername().equals(principal.getName())) {
             throw new IllegalAccessError();
         }
 
-        ShortNewsDto newsDto = NewsMapper.newsToShortNewsDto(news);
-        model.addAttribute("news", newsDto);
+        model.addAttribute("news", news);
         return "news/editNews";
+    }
+
+    @PostMapping("/{id}/edit")
+    public String editNewsAction(@PathVariable("id") Long id, EditNewsDto editNewsDto, Principal principal, Model model) {
+        News news = repository.findById(id)
+                .filter(foundNews -> foundNews.getSendDate() == null)
+                .orElseThrow(IllegalArgumentException::new);
+
+        if (!news.getNewsletter().getCreator().getUsername().equals(principal.getName())) {
+            throw new IllegalAccessError();
+        }
+
+        News newsUpdates = new News();
+        newsUpdates.setTitle(editNewsDto.getTitle());
+        newsUpdates.setContent(editNewsDto.getContent());
+
+        News result = service.updateNews(news, newsUpdates);
+
+        return "redirect:/news/" + result.getId();
     }
 
     @PostMapping

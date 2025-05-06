@@ -10,4 +10,5 @@ public interface NewsService {
     Set<News> findNewsOfNewsletter(Long newsletterId);
     Optional<News> findById(Long id);
     void createNews(News createNews);
+    News updateNews(News news, News newsUpdates);
 }
