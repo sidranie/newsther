@@ -17,5 +17,7 @@ public interface PersonService extends UserDetailsService, UserDetailsPasswordSe
 
     void registerPerson(Person person);
 
+    Person updatePerson(Person person, Person personUpdates);
+
     void deleteById(Long id);
 }

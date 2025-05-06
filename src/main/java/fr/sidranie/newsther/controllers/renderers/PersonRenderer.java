@@ -14,11 +14,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import fr.sidranie.newsther.dtos.person.CreatePersonDto;
+import fr.sidranie.newsther.dtos.person.EditPersonDto;
 import fr.sidranie.newsther.dtos.person.FullPersonDto;
 import fr.sidranie.newsther.dtos.person.ShortPersonDto;
 import fr.sidranie.newsther.entities.Person;
 import fr.sidranie.newsther.mappers.PersonMapper;
 import fr.sidranie.newsther.services.PersonService;
+import fr.sidranie.newsther.repositories.PersonRepository;
 import jakarta.transaction.Transactional;
 
 @Controller
@@ -26,9 +28,11 @@ import jakarta.transaction.Transactional;
 public class PersonRenderer {
 
     private PersonService service;
+    private PersonRepository repository;
 
-    public PersonRenderer(PersonService service) {
+    public PersonRenderer(PersonService service, PersonRepository repository) {
         this.service = service;
+        this.repository = repository;
     }
 
     @GetMapping
@@ -69,6 +73,40 @@ public class PersonRenderer {
         Person person = PersonMapper.createPersonDtoToPerson(createPersonDto);
         service.registerPerson(person);
         return "redirect:/login";
+    }
+
+    @GetMapping("/{id}/edit")
+    public String editPersonForm(@PathVariable("id") Long id, Principal principal, Model model) {
+        Person person = repository.findById(id).orElseThrow(IllegalArgumentException::new);
+
+        if (!person.getUsername().equals(principal.getName())) {
+            throw new IllegalAccessError("You cannot edit this person.");
+        }
+
+        model.addAttribute("person", person);
+        return "people/editPerson";
+    }
+
+    @PostMapping("/{id}/edit")
+    public String editPersonAction(@PathVariable("id") Long id, EditPersonDto editPersonDto, Principal principal) {
+        Person person = repository.findById(id).orElseThrow(IllegalArgumentException::new);
+
+        if (!person.getUsername().equals(principal.getName())) {
+            throw new IllegalAccessError("You cannot edit this person.");
+        }
+
+        Person personUpdates = new Person();
+        personUpdates.setUsername(editPersonDto.getUsername());
+        personUpdates.setEmail(editPersonDto.getEmail());
+        personUpdates.setGivenName(editPersonDto.getGivenName());
+        personUpdates.setFamilyName(editPersonDto.getFamilyName());
+
+        if (editPersonDto.getPassword() != null && !editPersonDto.getPassword().isEmpty()) {
+            personUpdates.setPassword(editPersonDto.getPassword());
+        }
+
+        Person result = service.updatePerson(person, personUpdates);
+        return "redirect:/perform_logout";
     }
 
     @PostMapping("/{id}/delete")

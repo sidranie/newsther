@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Newsther</title>
+</head>
+<body>
+<form method="post" th:action="@{/people/{id}/edit(id=${person.id})}">
+    <label>
+        Username
+        <input type="text" name="username" th:value="${person.username}"/>
+    </label>
+    <label>
+        Given Name
+        <input type="text" name="givenName" th:value="${person.givenName}"/>
+    </label>
+    <label>
+        Family Name
+        <input type="text" name="familyName" th:value="${person.familyName}"/>
+    </label>
+    <label>
+        Email
+        <input type="text" name="email" th:value="${person.email}"/>
+    </label>
+    <label>
+        Password
+        <input type="text" name="password"/>
+    </label>
+    <button type="submit">Save</button>
+</form>
+
+<a th:href="@{/people}">Back to people</a>
+</body>
+</html>

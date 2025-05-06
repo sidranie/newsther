@@ -58,6 +58,19 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
+    public Person updatePerson(Person person, Person personUpdates) {
+        person.setUsername(personUpdates.getUsername());
+        person.setEmail(personUpdates.getEmail());
+        if (personUpdates.getPassword() != null && !personUpdates.getPassword().isEmpty()) {
+            person.setPassword(passwordEncoder.encode(personUpdates.getPassword()));
+        }
+        person.setGivenName(personUpdates.getGivenName());
+        person.setFamilyName(personUpdates.getFamilyName());
+        repository.save(person);
+        return person;
+    }
+
+    @Override
     public void deleteById(Long id) {
         this.subscriptionRepository.deleteByPersonId(id);
         this.newsletterService.deleteByCreatorId(id);
