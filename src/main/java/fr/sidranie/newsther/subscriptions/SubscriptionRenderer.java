@@ -19,13 +19,13 @@ public class SubscriptionRenderer {
     }
 
     @PostMapping("/{newsletterSlug}/subscribe")
-    public String subscribe(@PathVariable("newsletterSlug") String slug, Principal principal, HttpServletRequest request) throws IllegalAccessException {
+    public String performSubscription(@PathVariable("newsletterSlug") String slug, Principal principal, HttpServletRequest request) throws IllegalAccessException {
         service.subscribePersonToNewsletter(principal, slug);
         return "redirect:" + request.getHeader("Referer");
     }
 
     @PostMapping("/{newsletterSlug}/unsubscribe")
-    public String unsubscribe(@PathVariable("newsletterSlug") String slug, Principal principal, HttpServletRequest request) throws IllegalAccessException {
+    public String performUnsubscription(@PathVariable("newsletterSlug") String slug, Principal principal, HttpServletRequest request) throws IllegalAccessException {
         service.unsubscribePersonFromNewsletter(principal, slug);
         return "redirect:" + request.getHeader("Referer");
     }

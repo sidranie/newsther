@@ -31,7 +31,7 @@ public class PersonRenderer {
     }
 
     @GetMapping
-    public String listPeople(Model model) {
+    public String renderPeopleList(Model model) {
         List<ShortPersonDto> people = service.findAll()
                 .stream()
                 .map(PersonMapper::personToShortPersonDto)
@@ -42,7 +42,7 @@ public class PersonRenderer {
     }
 
     @GetMapping("/{username}")
-    public String viewPerson(@PathVariable("username") String username, Model model) {
+    public String renderPersonDetails(@PathVariable("username") String username, Model model) {
         FullPersonDto fullPersonDto = service.findByUsernameOrEmail(username)
                 .map(PersonMapper::personToFullPersonDto)
                 .orElseThrow(IllegalArgumentException::new);
@@ -51,7 +51,7 @@ public class PersonRenderer {
     }
 
     @GetMapping("/me")
-    public String viewMyProfile(Principal principal) throws IllegalAccessException {
+    public String renderMyProfile(Principal principal) throws IllegalAccessException {
         if (principal == null) {
             throw new IllegalAccessException();
         }
@@ -59,19 +59,19 @@ public class PersonRenderer {
     }
 
     @GetMapping("/create")
-    public String createPersonForm() {
+    public String renderPersonCreationForm() {
         return "people/createPersonForm";
     }
 
     @PostMapping("/create")
-    public String createPerson(CreatePersonDto createPersonDto) {
+    public String performPersonCreation(CreatePersonDto createPersonDto) {
         Person person = PersonMapper.createPersonDtoToPerson(createPersonDto);
         service.registerPerson(person);
         return "redirect:/login";
     }
 
     @GetMapping("/{id}/edit")
-    public String editPersonForm(@PathVariable("id") Long id, Principal principal, Model model) {
+    public String renderPersonEditionForm(@PathVariable("id") Long id, Principal principal, Model model) {
         Person person = repository.findById(id).orElseThrow(IllegalArgumentException::new);
 
         if (!person.getUsername().equals(principal.getName())) {
@@ -83,7 +83,7 @@ public class PersonRenderer {
     }
 
     @PostMapping("/{id}/edit")
-    public String editPersonAction(@PathVariable("id") Long id, EditPersonDto editPersonDto, Principal principal) {
+    public String performPersonEdition(@PathVariable("id") Long id, EditPersonDto editPersonDto, Principal principal) {
         Person person = repository.findById(id).orElseThrow(IllegalArgumentException::new);
 
         if (!person.getUsername().equals(principal.getName())) {
@@ -106,13 +106,13 @@ public class PersonRenderer {
 
     @PostMapping("/{id}/delete")
     @Transactional
-    public String deletePerson(@PathVariable("id") Long id) {
+    public String performPersonDeletion(@PathVariable("id") Long id) {
         service.deleteById(id);
         return "redirect:/people";
     }
 
     @GetMapping("/{id}/subscriptions")
-    public String listSubscriptionsForPerson(@PathVariable("id") Long id, Model model) {
+    public String renderPersonSubscriptionList(@PathVariable("id") Long id, Model model) {
         Person person = service.findById(id).orElseThrow(IllegalArgumentException::new);
         FullPersonDto personDto = PersonMapper.personToFullPersonDto(person);
         model.addAttribute("person", personDto);

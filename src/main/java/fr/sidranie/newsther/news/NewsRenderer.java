@@ -34,7 +34,7 @@ public class NewsRenderer {
     }
 
     @GetMapping
-    public String listNewsOfNewsletter(@RequestParam Long newsletterId, Model model) {
+    public String renderNewsList(@RequestParam Long newsletterId, Model model) {
         if (newsletterId == null) {
             throw new IllegalArgumentException();
         }
@@ -49,7 +49,7 @@ public class NewsRenderer {
     }
 
     @GetMapping("/{id}")
-    public String viewNews(@PathVariable("id") Long id, Model model) {
+    public String renderNewsDetails(@PathVariable("id") Long id, Model model) {
         FullNewsDto newsDto = NewsMapper.newsToFullNewsDto(repository.findById(id)
                 .orElseThrow(IllegalArgumentException::new));
         model.addAttribute("news", newsDto);
@@ -68,8 +68,18 @@ public class NewsRenderer {
         return "news/createNews";
     }
 
+    @PostMapping
+    public String performNewsCreation(CreateNewsDto createNewsDto) {
+        Newsletter newsletter = newsletterRepository.findById(createNewsDto.getNewsletterId())
+                .orElseThrow(IllegalArgumentException::new);
+        News news = NewsMapper.createNewsDtoToNews(createNewsDto);
+        news.setNewsletter(newsletter);
+        service.createNews(news);
+        return "redirect:news/" + news.getId();
+    }
+
     @GetMapping("/{id}/edit")
-    public String editNewsForm(@PathVariable("id") Long id, Principal principal, Model model) {
+    public String renderNewsEditionForm(@PathVariable("id") Long id, Principal principal, Model model) {
         News news = repository.findById(id)
                 .filter(foundNews -> foundNews.getSendDate() == null)
                 .orElseThrow(IllegalArgumentException::new);
@@ -83,7 +93,7 @@ public class NewsRenderer {
     }
 
     @PostMapping("/{id}/edit")
-    public String editNewsAction(@PathVariable("id") Long id, EditNewsDto editNewsDto, Principal principal, Model model) {
+    public String performNewsEdition(@PathVariable("id") Long id, EditNewsDto editNewsDto, Principal principal, Model model) {
         News news = repository.findById(id)
                 .filter(foundNews -> foundNews.getSendDate() == null)
                 .orElseThrow(IllegalArgumentException::new);
@@ -99,15 +109,5 @@ public class NewsRenderer {
         News result = service.updateNews(news, newsUpdates);
 
         return "redirect:/news/" + result.getId();
-    }
-
-    @PostMapping
-    public String performNewsCreation(CreateNewsDto createNewsDto) {
-        Newsletter newsletter = newsletterRepository.findById(createNewsDto.getNewsletterId())
-                .orElseThrow(IllegalArgumentException::new);
-        News news = NewsMapper.createNewsDtoToNews(createNewsDto);
-        news.setNewsletter(newsletter);
-        service.createNews(news);
-        return "redirect:news/" + news.getId();
     }
 }

@@ -17,7 +17,7 @@ public class TasksRenderer {
     }
 
     @PostMapping("/send-news")
-    public String sendNews() throws MessagingException {
+    public String performNewsSending() throws MessagingException {
         emailService.sendEmailToEveryone();
         return "redirect:/";
     }

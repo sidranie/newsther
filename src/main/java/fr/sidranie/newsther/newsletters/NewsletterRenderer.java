@@ -28,7 +28,7 @@ public class NewsletterRenderer {
     }
 
     @GetMapping
-    public String allNewsletters(Model model) {
+    public String renderNewslettersList(Model model) {
         List<ShortNewsletterDto> newsletters = repository.findAll()
                 .stream()
                 .sorted(Comparator.comparing(Newsletter::getTitle))
@@ -39,7 +39,7 @@ public class NewsletterRenderer {
     }
 
     @GetMapping("/{slug}")
-    public String viewNewsletter(@PathVariable("slug") String slug, Model model) {
+    public String renderNewsletterDetails(@PathVariable("slug") String slug, Model model) {
         FullNewsletterDto fullNewsletterDto = repository.findBySlug(slug)
                 .map(NewsletterMapper::newsletterToFullNewsletterDto)
                 .orElseThrow(IllegalAccessError::new);
@@ -48,13 +48,13 @@ public class NewsletterRenderer {
     }
 
     @GetMapping("/create")
-    public String createNewsletterForm() {
+    public String renderNewsletterCreationForm() {
         return "newsletters/createNewsletterForm";
     }
 
     @PostMapping("/create")
-    public String createNewsletterAction(CreateNewsletterDto createNewsletterDto,
-                                         Principal principal) throws IllegalAccessException {
+    public String performNewsletterCreation(CreateNewsletterDto createNewsletterDto,
+                                            Principal principal) throws IllegalAccessException {
         if (principal == null) {
             throw new IllegalAccessException();
         }
@@ -66,7 +66,7 @@ public class NewsletterRenderer {
     }
 
     @GetMapping("/{slug}/edit")
-    public String editNewsletterForm(@PathVariable("slug") String slug, Principal principal, Model model) {
+    public String renderNewsletterEditionForm(@PathVariable("slug") String slug, Principal principal, Model model) {
         FullNewsletterDto fullNewsletterDto = repository.findBySlug(slug)
                 .filter(newsletter -> newsletter.getCreator().getUsername().equals(principal.getName()))
                 .map(NewsletterMapper::newsletterToFullNewsletterDto)
@@ -76,9 +76,9 @@ public class NewsletterRenderer {
     }
 
     @PostMapping("/{slug}/edit")
-    public String editNewsletter(@PathVariable("slug") String slug,
-                                 EditNewsletterDto editNewsletterDto,
-                                 Principal principal) throws IllegalAccessException {
+    public String performNewsletterEdition(@PathVariable("slug") String slug,
+                                           EditNewsletterDto editNewsletterDto,
+                                           Principal principal) throws IllegalAccessException {
         if (principal == null) {
             throw new IllegalAccessException();
         }
@@ -98,7 +98,7 @@ public class NewsletterRenderer {
     }
 
     @PostMapping("/{id}/delete")
-    public String deleteNewsletter(@PathVariable("id") Long id) {
+    public String performNewsletterDeletion(@PathVariable("id") Long id) {
         service.deleteNewsletter(id);
         return "redirect:/newsletters";
     }
