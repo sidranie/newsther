@@ -3,19 +3,14 @@ package fr.sidranie.newsther.news;
 import java.security.Principal;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import fr.sidranie.newsther.news.dtos.CreateNewsDto;
 import fr.sidranie.newsther.news.dtos.EditNewsDto;
-import fr.sidranie.newsther.news.dtos.FullNewsDto;
-import fr.sidranie.newsther.news.dtos.ShortNewsDto;
 import fr.sidranie.newsther.newsletters.Newsletter;
-import fr.sidranie.newsther.newsletters.NewsletterMapper;
 import fr.sidranie.newsther.newsletters.NewsletterRepository;
-import fr.sidranie.newsther.newsletters.dtos.ShortNewsletterDto;
 
 @Controller
 @RequestMapping("/news")
@@ -39,20 +34,18 @@ public class NewsRenderer {
             throw new IllegalArgumentException();
         }
 
-        Set<News> newsList = repository.findByNewsletterId(newsletterId);
-        List<ShortNewsDto> newsDtoList = newsList.stream()
-                .map(NewsMapper::newsToShortNewsDto)
-                .sorted(Comparator.comparing(ShortNewsDto::getTitle))
+        List<News> newsList = repository.findByNewsletterId(newsletterId)
+                .stream()
+                .sorted(Comparator.comparing(News::getTitle))
                 .toList();
-        model.addAttribute("newsList", newsDtoList);
+        model.addAttribute("newsList", newsList);
         return "news/listNews";
     }
 
     @GetMapping("/{id}")
     public String renderNewsDetails(@PathVariable("id") Long id, Model model) {
-        FullNewsDto newsDto = NewsMapper.newsToFullNewsDto(repository.findById(id)
-                .orElseThrow(IllegalArgumentException::new));
-        model.addAttribute("news", newsDto);
+        News news = repository.findById(id).orElseThrow(IllegalArgumentException::new);
+        model.addAttribute("news", news);
         return "news/viewNews";
     }
 
@@ -62,8 +55,8 @@ public class NewsRenderer {
             throw new IllegalArgumentException();
         }
 
-        ShortNewsletterDto newsletter = NewsletterMapper.newsletterToShortNewsletterDto(
-                newsletterRepository.findById(newsletterId).orElseThrow(IllegalArgumentException::new));
+        Newsletter newsletter = newsletterRepository.findById(newsletterId)
+                .orElseThrow(IllegalArgumentException::new);
         model.addAttribute("newsletter", newsletter);
         return "news/createNews";
     }

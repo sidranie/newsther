@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import fr.sidranie.newsther.newsletters.dtos.CreateNewsletterDto;
 import fr.sidranie.newsther.newsletters.dtos.EditNewsletterDto;
-import fr.sidranie.newsther.newsletters.dtos.FullNewsletterDto;
-import fr.sidranie.newsther.newsletters.dtos.ShortNewsletterDto;
 
 @Controller
 @RequestMapping("/newsletters")
@@ -29,10 +27,9 @@ public class NewsletterRenderer {
 
     @GetMapping
     public String renderNewslettersList(Model model) {
-        List<ShortNewsletterDto> newsletters = repository.findAll()
+        List<Newsletter> newsletters = repository.findAll()
                 .stream()
                 .sorted(Comparator.comparing(Newsletter::getTitle))
-                .map(NewsletterMapper::newsletterToShortNewsletterDto)
                 .toList();
         model.addAttribute("newsletters", newsletters);
         return "newsletters/listNewsletters";
@@ -40,10 +37,8 @@ public class NewsletterRenderer {
 
     @GetMapping("/{slug}")
     public String renderNewsletterDetails(@PathVariable("slug") String slug, Model model) {
-        FullNewsletterDto fullNewsletterDto = repository.findBySlug(slug)
-                .map(NewsletterMapper::newsletterToFullNewsletterDto)
-                .orElseThrow(IllegalAccessError::new);
-        model.addAttribute("newsletter", fullNewsletterDto);
+        Newsletter newsletter = repository.findBySlug(slug).orElseThrow(IllegalAccessError::new);
+        model.addAttribute("newsletter", newsletter);
         return "newsletters/viewNewsletter";
     }
 
@@ -67,11 +62,10 @@ public class NewsletterRenderer {
 
     @GetMapping("/{slug}/edit")
     public String renderNewsletterEditionForm(@PathVariable("slug") String slug, Principal principal, Model model) {
-        FullNewsletterDto fullNewsletterDto = repository.findBySlug(slug)
-                .filter(newsletter -> newsletter.getCreator().getUsername().equals(principal.getName()))
-                .map(NewsletterMapper::newsletterToFullNewsletterDto)
+        Newsletter newsletter = repository.findBySlug(slug)
+                .filter(foundNewsletter -> foundNewsletter.getCreator().getUsername().equals(principal.getName()))
                 .orElseThrow(IllegalAccessError::new);
-        model.addAttribute("newsletter", fullNewsletterDto);
+        model.addAttribute("newsletter", newsletter);
         return "newsletters/editNewsletter";
     }
 

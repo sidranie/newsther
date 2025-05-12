@@ -12,10 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import fr.sidranie.newsther.people.dtos.CreatePersonDto;
 import fr.sidranie.newsther.people.dtos.EditPersonDto;
-import fr.sidranie.newsther.people.dtos.FullPersonDto;
-import fr.sidranie.newsther.people.dtos.ShortPersonDto;
-import fr.sidranie.newsther.subscriptions.SubscriptionMapper;
-import fr.sidranie.newsther.subscriptions.dtos.ShortNewsletterSubscriptionDto;
+import fr.sidranie.newsther.subscriptions.Subscription;
 import jakarta.transaction.Transactional;
 
 @Controller
@@ -32,10 +29,9 @@ public class PersonRenderer {
 
     @GetMapping
     public String renderPeopleList(Model model) {
-        List<ShortPersonDto> people = service.findAll()
+        List<Person> people = service.findAll()
                 .stream()
-                .map(PersonMapper::personToShortPersonDto)
-                .sorted(Comparator.comparing(ShortPersonDto::getUsername))
+                .sorted(Comparator.comparing(Person::getUsername))
                 .toList();
         model.addAttribute("people", people);
         return "people/listPeople";
@@ -43,10 +39,9 @@ public class PersonRenderer {
 
     @GetMapping("/{username}")
     public String renderPersonDetails(@PathVariable("username") String username, Model model) {
-        FullPersonDto fullPersonDto = service.findByUsernameOrEmail(username)
-                .map(PersonMapper::personToFullPersonDto)
+        Person person = service.findByUsernameOrEmail(username)
                 .orElseThrow(IllegalArgumentException::new);
-        model.addAttribute("person", fullPersonDto);
+        model.addAttribute("person", person);
         return "people/viewPerson";
     }
 
@@ -100,7 +95,7 @@ public class PersonRenderer {
             personUpdates.setPassword(editPersonDto.getPassword());
         }
 
-        Person result = service.updatePerson(person, personUpdates);
+        service.updatePerson(person, personUpdates);
         return "redirect:/perform_logout";
     }
 
@@ -114,13 +109,11 @@ public class PersonRenderer {
     @GetMapping("/{id}/subscriptions")
     public String renderPersonSubscriptionList(@PathVariable("id") Long id, Model model) {
         Person person = service.findById(id).orElseThrow(IllegalArgumentException::new);
-        FullPersonDto personDto = PersonMapper.personToFullPersonDto(person);
-        model.addAttribute("person", personDto);
+        model.addAttribute("person", person);
 
-        List<ShortNewsletterSubscriptionDto> subscriptions = person.getSubscriptions()
+        List<Subscription> subscriptions = person.getSubscriptions()
                 .stream()
-                .map(SubscriptionMapper::subscriptionToShortNewsletterSubscriptionDto)
-                .sorted(Comparator.comparing(ShortNewsletterSubscriptionDto::getSince).reversed())
+                .sorted(Comparator.comparing(Subscription::getSince).reversed())
                 .toList();
         model.addAttribute("subscriptions", subscriptions);
         return "people/listSubscriptionsForPerson";

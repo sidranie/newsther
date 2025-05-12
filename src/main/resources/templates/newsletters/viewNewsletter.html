@@ -36,7 +36,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr th:each="news: ${newsletter.newsList}">
+    <tr th:each="news: ${newsletter.news}">
         <td th:text="${news.id}"></td>
         <td><a th:href="@{/news/{id}(id=${news.id})}" th:text="${news.title}"></a></td>
         <td th:text="${news.creationDate}"></td>
