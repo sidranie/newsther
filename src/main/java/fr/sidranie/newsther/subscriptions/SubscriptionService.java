@@ -2,7 +2,6 @@ package fr.sidranie.newsther.subscriptions;
 
 import java.security.Principal;
 import java.time.Instant;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import fr.sidranie.newsther.newsletters.Newsletter;
@@ -23,14 +22,6 @@ public class SubscriptionService {
         this.subscriptions = subscriptions;
         this.people = people;
         this.newsletters = newsletters;
-    }
-
-    public Optional<Subscription> findById(Long id) {
-        return subscriptions.findById(id);
-    }
-
-    public Optional<Subscription> findByPersonIdAndNewsletterId(Long personId, Long newsletterId) {
-        return subscriptions.findByPersonIdAndNewsletterId(personId, newsletterId);
     }
 
     public Subscription subscribePersonToNewsletter(Long personId, Long newsletterId) {

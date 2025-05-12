@@ -29,7 +29,7 @@ public class PersonRenderer {
 
     @GetMapping
     public String renderPeopleList(Model model) {
-        List<Person> sortedPeople = service.findAll()
+        List<Person> sortedPeople = people.findAll()
                 .stream()
                 .sorted(Comparator.comparing(Person::getUsername))
                 .toList();
@@ -39,7 +39,7 @@ public class PersonRenderer {
 
     @GetMapping("/{username}")
     public String renderPersonDetails(@PathVariable("username") String username, Model model) {
-        Person person = service.findByUsernameOrEmail(username)
+        Person person = people.findByUsernameOrEmail(username, username)
                 .orElseThrow(IllegalArgumentException::new);
         model.addAttribute("person", person);
         return "people/viewPerson";
@@ -108,7 +108,7 @@ public class PersonRenderer {
 
     @GetMapping("/{id}/subscriptions")
     public String renderPersonSubscriptionList(@PathVariable("id") Long id, Model model) {
-        Person person = service.findById(id).orElseThrow(IllegalArgumentException::new);
+        Person person = people.findById(id).orElseThrow(IllegalArgumentException::new);
         model.addAttribute("person", person);
 
         List<Subscription> subscriptions = person.getSubscriptions()

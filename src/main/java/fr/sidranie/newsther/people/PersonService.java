@@ -1,9 +1,5 @@
 package fr.sidranie.newsther.people;
 
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
-
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsPasswordService;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -31,20 +27,6 @@ public class PersonService implements UserDetailsService, UserDetailsPasswordSer
         this.passwordEncoder = passwordEncoder;
     }
 
-    public Set<Person> findAll() {
-        Set<Person> result = new HashSet<>();
-        this.people.findAll().forEach(result::add);
-        return result;
-    }
-
-    public Optional<Person> findById(Long id) {
-        return people.findById(id);
-    }
-
-    public Optional<Person> findByUsernameOrEmail(String identifier) {
-        return people.findByUsernameOrEmail(identifier, identifier);
-    }
-
     public void registerPerson(Person person) {
         person.setId(null);
         person.setPassword(passwordEncoder.encode(person.getPassword()));
@@ -70,7 +52,7 @@ public class PersonService implements UserDetailsService, UserDetailsPasswordSer
     }
 
     public UserDetails updatePassword(UserDetails user, String newPassword) {
-        Person person = findByUsernameOrEmail(user.getUsername())
+        Person person = people.findByUsernameOrEmail(user.getUsername(), user.getUsername())
                 .orElseThrow(IllegalArgumentException::new);
         person.setPassword(passwordEncoder.encode(newPassword));
         people.save(person);
@@ -78,6 +60,6 @@ public class PersonService implements UserDetailsService, UserDetailsPasswordSer
     }
 
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return findByUsernameOrEmail(username).orElse(null);
+        return people.findByUsernameOrEmail(username, username).orElse(null);
     }
 }
