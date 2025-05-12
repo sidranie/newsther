@@ -15,8 +15,8 @@ import org.thymeleaf.context.Context;
 import fr.sidranie.newsther.news.News;
 import fr.sidranie.newsther.news.Newses;
 import fr.sidranie.newsther.newsletters.Newsletter;
+import fr.sidranie.newsther.people.People;
 import fr.sidranie.newsther.people.Person;
-import fr.sidranie.newsther.people.PersonService;
 import fr.sidranie.newsther.subscriptions.Subscription;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -25,16 +25,16 @@ import jakarta.mail.internet.MimeMessage;
 public class EmailService {
     private final JavaMailSender mailSender;
     private final TemplateEngine templateEngine;
-    private final PersonService personService;
+    private final People people;
     private final Newses newses;
 
     @Value("${spring.mail.username}")
     private String fromMail;
 
-    public EmailService(JavaMailSender mailSender, TemplateEngine templateEngine, PersonService personService, Newses newses) {
+    public EmailService(JavaMailSender mailSender, TemplateEngine templateEngine, People people, Newses newses) {
         this.mailSender = mailSender;
         this.templateEngine = templateEngine;
-        this.personService = personService;
+        this.people = people;
         this.newses = newses;
     }
 
@@ -57,7 +57,7 @@ public class EmailService {
     public void sendEmailToEveryone() throws MessagingException {
         List<News> sentNews = new ArrayList<>();
 
-        for (Person person: personService.findAll()) {
+        for (Person person: people.findAll()) {
             List<News> newsList = getNewsToSendFor(person);
             if (!newsList.isEmpty()) {
                 System.out.println("News list to send for " + person.getUsername() + ": ");
