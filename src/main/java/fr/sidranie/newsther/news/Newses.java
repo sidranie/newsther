@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface NewsRepository extends JpaRepository<News, Long> {
+public interface Newses extends JpaRepository<News, Long> {
 
     Set<News> findByNewsletterId(Long newsletterId);
 

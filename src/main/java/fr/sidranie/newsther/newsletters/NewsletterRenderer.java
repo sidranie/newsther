@@ -18,26 +18,26 @@ import fr.sidranie.newsther.newsletters.dtos.EditNewsletterDto;
 public class NewsletterRenderer {
 
     private final NewsletterService service;
-    private final NewsletterRepository repository;
+    private final Newsletters newsletters;
 
-    public NewsletterRenderer(NewsletterService service, NewsletterRepository repository) {
+    public NewsletterRenderer(NewsletterService service, Newsletters newsletters) {
         this.service = service;
-        this.repository = repository;
+        this.newsletters = newsletters;
     }
 
     @GetMapping
     public String renderNewslettersList(Model model) {
-        List<Newsletter> newsletters = repository.findAll()
+        List<Newsletter> sortedNewsletters = this.newsletters.findAll()
                 .stream()
                 .sorted(Comparator.comparing(Newsletter::getTitle))
                 .toList();
-        model.addAttribute("newsletters", newsletters);
+        model.addAttribute("newsletters", sortedNewsletters);
         return "newsletters/listNewsletters";
     }
 
     @GetMapping("/{slug}")
     public String renderNewsletterDetails(@PathVariable("slug") String slug, Model model) {
-        Newsletter newsletter = repository.findBySlug(slug).orElseThrow(IllegalAccessError::new);
+        Newsletter newsletter = newsletters.findBySlug(slug).orElseThrow(IllegalAccessError::new);
         model.addAttribute("newsletter", newsletter);
         return "newsletters/viewNewsletter";
     }
@@ -62,7 +62,7 @@ public class NewsletterRenderer {
 
     @GetMapping("/{slug}/edit")
     public String renderNewsletterEditionForm(@PathVariable("slug") String slug, Principal principal, Model model) {
-        Newsletter newsletter = repository.findBySlug(slug)
+        Newsletter newsletter = newsletters.findBySlug(slug)
                 .filter(foundNewsletter -> foundNewsletter.getCreator().getUsername().equals(principal.getName()))
                 .orElseThrow(IllegalAccessError::new);
         model.addAttribute("newsletter", newsletter);
@@ -77,7 +77,7 @@ public class NewsletterRenderer {
             throw new IllegalAccessException();
         }
 
-        Newsletter newsletter = repository.findBySlug(slug).orElseThrow(IllegalAccessError::new);
+        Newsletter newsletter = newsletters.findBySlug(slug).orElseThrow(IllegalAccessError::new);
 
         if (!newsletter.getCreator().getUsername().equals(principal.getName())) {
             throw new IllegalAccessError();

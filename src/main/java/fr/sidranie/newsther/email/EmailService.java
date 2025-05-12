@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import fr.sidranie.newsther.news.News;
-import fr.sidranie.newsther.news.NewsRepository;
+import fr.sidranie.newsther.news.Newses;
 import fr.sidranie.newsther.newsletters.Newsletter;
 import fr.sidranie.newsther.people.Person;
 import fr.sidranie.newsther.people.PersonService;
@@ -26,16 +26,16 @@ public class EmailService {
     private final JavaMailSender mailSender;
     private final TemplateEngine templateEngine;
     private final PersonService personService;
-    private final NewsRepository newsRepository;
+    private final Newses newses;
 
     @Value("${spring.mail.username}")
     private String fromMail;
 
-    public EmailService(JavaMailSender mailSender, TemplateEngine templateEngine, PersonService personService, NewsRepository newsRepository) {
+    public EmailService(JavaMailSender mailSender, TemplateEngine templateEngine, PersonService personService, Newses newses) {
         this.mailSender = mailSender;
         this.templateEngine = templateEngine;
         this.personService = personService;
-        this.newsRepository = newsRepository;
+        this.newses = newses;
     }
 
     public void sendEmail(String to, String subject, String template, Context context) throws MessagingException {
@@ -68,7 +68,7 @@ public class EmailService {
 
         Instant now = Instant.now();
         sentNews.forEach(news -> news.setSendDate(now));
-        this.newsRepository.saveAll(sentNews);
+        this.newses.saveAll(sentNews);
     }
 
     private void sendNewsTo(Person person, List<News> newsList) throws MessagingException {

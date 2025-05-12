@@ -20,20 +20,20 @@ import jakarta.transaction.Transactional;
 public class PersonRenderer {
 
     private PersonService service;
-    private PersonRepository repository;
+    private People people;
 
-    public PersonRenderer(PersonService service, PersonRepository repository) {
+    public PersonRenderer(PersonService service, People people) {
         this.service = service;
-        this.repository = repository;
+        this.people = people;
     }
 
     @GetMapping
     public String renderPeopleList(Model model) {
-        List<Person> people = service.findAll()
+        List<Person> sortedPeople = service.findAll()
                 .stream()
                 .sorted(Comparator.comparing(Person::getUsername))
                 .toList();
-        model.addAttribute("people", people);
+        model.addAttribute("people", sortedPeople);
         return "people/listPeople";
     }
 
@@ -67,7 +67,7 @@ public class PersonRenderer {
 
     @GetMapping("/{id}/edit")
     public String renderPersonEditionForm(@PathVariable("id") Long id, Principal principal, Model model) {
-        Person person = repository.findById(id).orElseThrow(IllegalArgumentException::new);
+        Person person = people.findById(id).orElseThrow(IllegalArgumentException::new);
 
         if (!person.getUsername().equals(principal.getName())) {
             throw new IllegalAccessError("You cannot edit this person.");
@@ -79,7 +79,7 @@ public class PersonRenderer {
 
     @PostMapping("/{id}/edit")
     public String performPersonEdition(@PathVariable("id") Long id, EditPersonDto editPersonDto, Principal principal) {
-        Person person = repository.findById(id).orElseThrow(IllegalArgumentException::new);
+        Person person = people.findById(id).orElseThrow(IllegalArgumentException::new);
 
         if (!person.getUsername().equals(principal.getName())) {
             throw new IllegalAccessError("You cannot edit this person.");

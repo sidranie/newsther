@@ -6,44 +6,44 @@ import java.util.Locale;
 import java.util.regex.Pattern;
 
 import org.springframework.stereotype.Service;
-import fr.sidranie.newsther.news.NewsRepository;
-import fr.sidranie.newsther.people.PersonRepository;
-import fr.sidranie.newsther.subscriptions.SubscriptionRepository;
+import fr.sidranie.newsther.news.Newses;
+import fr.sidranie.newsther.people.People;
+import fr.sidranie.newsther.subscriptions.Subscriptions;
 
 @Service
 public class NewsletterService {
 
-    private final NewsletterRepository repository;
-    private final PersonRepository personRepository;
-    private final NewsRepository newsRepository;
-    private final SubscriptionRepository subscriptionRepository;
+    private final Newsletters newsletters;
+    private final People people;
+    private final Newses newses;
+    private final Subscriptions subscriptions;
 
-    public NewsletterService(NewsletterRepository repository,
-                             PersonRepository personRepository,
-                             NewsRepository newsRepository,
-                             SubscriptionRepository subscriptionRepository) {
-        this.repository = repository;
-        this.personRepository = personRepository;
-        this.newsRepository = newsRepository;
-        this.subscriptionRepository = subscriptionRepository;
+    public NewsletterService(Newsletters newsletters,
+                             People people,
+                             Newses newses,
+                             Subscriptions subscriptions) {
+        this.newsletters = newsletters;
+        this.people = people;
+        this.newses = newses;
+        this.subscriptions = subscriptions;
     }
 
     public void createNewsletter(Newsletter newsletter, Principal principal) {
         newsletter.setId(null);
-        newsletter.setCreator(personRepository.findByUsernameOrEmail(principal.getName(), principal.getName())
+        newsletter.setCreator(people.findByUsernameOrEmail(principal.getName(), principal.getName())
                 .orElseThrow(IllegalAccessError::new));
         newsletter.setSlug(titleToSlug(newsletter.getTitle()));
-        repository.save(newsletter);
+        newsletters.save(newsletter);
     }
 
     public void deleteNewsletter(Long id) {
-        newsRepository.deleteByNewsletterId(id);
-        subscriptionRepository.deleteByNewsletterId(id);
-        repository.deleteById(id);
+        newses.deleteByNewsletterId(id);
+        subscriptions.deleteByNewsletterId(id);
+        newsletters.deleteById(id);
     }
 
     public void deleteByCreatorId(Long creatorId) {
-        repository.findByCreatorId(creatorId).stream()
+        newsletters.findByCreatorId(creatorId).stream()
             .map(Newsletter::getId)
             .forEach(this::deleteNewsletter);
     }
@@ -51,7 +51,7 @@ public class NewsletterService {
     public Newsletter editNewsletter(Newsletter newsletterTarget, Newsletter newsletterUpdates) {
         newsletterTarget.setTitle(newsletterUpdates.getTitle());
         newsletterTarget.setSlug(titleToSlug(newsletterUpdates.getTitle()));
-        repository.save(newsletterTarget);
+        newsletters.save(newsletterTarget);
         return newsletterTarget;
     }
 

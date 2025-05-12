@@ -10,22 +10,22 @@ import org.springframework.web.bind.annotation.*;
 import fr.sidranie.newsther.news.dtos.CreateNewsDto;
 import fr.sidranie.newsther.news.dtos.EditNewsDto;
 import fr.sidranie.newsther.newsletters.Newsletter;
-import fr.sidranie.newsther.newsletters.NewsletterRepository;
+import fr.sidranie.newsther.newsletters.Newsletters;
 
 @Controller
 @RequestMapping("/news")
 public class NewsRenderer {
 
     private final NewsService service;
-    private final NewsRepository repository;
-    private final NewsletterRepository newsletterRepository;
+    private final Newses newses;
+    private final Newsletters newsletters;
 
     public NewsRenderer(NewsService service,
-                        NewsRepository newsRepository,
-                        NewsletterRepository newsletterRepository) {
+                        Newses newses,
+                        Newsletters newsletters) {
         this.service = service;
-        this.repository = newsRepository;
-        this.newsletterRepository = newsletterRepository;
+        this.newses = newses;
+        this.newsletters = newsletters;
     }
 
     @GetMapping
@@ -34,17 +34,17 @@ public class NewsRenderer {
             throw new IllegalArgumentException();
         }
 
-        List<News> newsList = repository.findByNewsletterId(newsletterId)
+        List<News> sortedNewses = newses.findByNewsletterId(newsletterId)
                 .stream()
                 .sorted(Comparator.comparing(News::getTitle))
                 .toList();
-        model.addAttribute("newsList", newsList);
+        model.addAttribute("newsList", sortedNewses);
         return "news/listNews";
     }
 
     @GetMapping("/{id}")
     public String renderNewsDetails(@PathVariable("id") Long id, Model model) {
-        News news = repository.findById(id).orElseThrow(IllegalArgumentException::new);
+        News news = newses.findById(id).orElseThrow(IllegalArgumentException::new);
         model.addAttribute("news", news);
         return "news/viewNews";
     }
@@ -55,7 +55,7 @@ public class NewsRenderer {
             throw new IllegalArgumentException();
         }
 
-        Newsletter newsletter = newsletterRepository.findById(newsletterId)
+        Newsletter newsletter = newsletters.findById(newsletterId)
                 .orElseThrow(IllegalArgumentException::new);
         model.addAttribute("newsletter", newsletter);
         return "news/createNews";
@@ -63,7 +63,7 @@ public class NewsRenderer {
 
     @PostMapping
     public String performNewsCreation(CreateNewsDto createNewsDto) {
-        Newsletter newsletter = newsletterRepository.findById(createNewsDto.getNewsletterId())
+        Newsletter newsletter = newsletters.findById(createNewsDto.getNewsletterId())
                 .orElseThrow(IllegalArgumentException::new);
         News news = NewsMapper.createNewsDtoToNews(createNewsDto);
         news.setNewsletter(newsletter);
@@ -73,7 +73,7 @@ public class NewsRenderer {
 
     @GetMapping("/{id}/edit")
     public String renderNewsEditionForm(@PathVariable("id") Long id, Principal principal, Model model) {
-        News news = repository.findById(id)
+        News news = newses.findById(id)
                 .filter(foundNews -> foundNews.getSendDate() == null)
                 .orElseThrow(IllegalArgumentException::new);
 
@@ -87,7 +87,7 @@ public class NewsRenderer {
 
     @PostMapping("/{id}/edit")
     public String performNewsEdition(@PathVariable("id") Long id, EditNewsDto editNewsDto, Principal principal, Model model) {
-        News news = repository.findById(id)
+        News news = newses.findById(id)
                 .filter(foundNews -> foundNews.getSendDate() == null)
                 .orElseThrow(IllegalArgumentException::new);
 
