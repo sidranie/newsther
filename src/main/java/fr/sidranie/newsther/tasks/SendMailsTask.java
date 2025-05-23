@@ -6,6 +6,7 @@ import java.util.Objects;
 import java.util.Queue;
 import java.util.Set;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -41,6 +42,7 @@ public class SendMailsTask {
         this.people = people;
     }
 
+    @Transactional
     @Scheduled(cron = "${newsther.send-mail-cron-trigger}")
     public void sendMailsTask() throws MessagingException {
         this.buildMailTemplates();
