@@ -38,3 +38,7 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Custom properties ###
+**/application-dev.properties
+**/data.sql
