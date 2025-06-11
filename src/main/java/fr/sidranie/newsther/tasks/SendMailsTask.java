@@ -35,6 +35,8 @@ public class SendMailsTask {
 
     @Value("${spring.mail.username}")
     private String fromMail;
+    @Value("${newsther.mailing.retry.limit}")
+    private int retryLimit;
 
     public SendMailsTask(JavaMailSender mailSender, TemplateEngine templateEngine, People people) {
         this.mailSender = mailSender;
@@ -43,7 +45,7 @@ public class SendMailsTask {
     }
 
     @Transactional
-    @Scheduled(cron = "${newsther.send-mail-cron-trigger}")
+    @Scheduled(cron = "${newsther.mailing.cron-trigger}")
     public void sendMailsTask() throws MessagingException {
         this.buildMailTemplates();
 
@@ -56,7 +58,7 @@ public class SendMailsTask {
                 this.mailSender.send(mail);
 
             } catch (MailException e) {
-                if (countedMail.getCounter() <= 2) {
+                if (countedMail.getCounter() < retryLimit) {
                     countedMail.incrementCounter();
                     this.mailsQueue.add(countedMail);
                 }
