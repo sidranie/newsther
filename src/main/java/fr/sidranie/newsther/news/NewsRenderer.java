@@ -29,7 +29,7 @@ public class NewsRenderer {
     }
 
     @GetMapping
-    public String renderNewsList(@RequestParam("newsletterId") Long newsletterId, Model model) {
+    public String renderNewsList(@RequestParam Long newsletterId, Model model) {
         if (newsletterId == null) {
             throw new IllegalArgumentException();
         }

@@ -50,7 +50,6 @@ public class CountedObject<T> {
         this.counter--;
     }
 
-
     /**
      * Subtract number to counter
      * @param number The number to subtract to counter.

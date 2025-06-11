@@ -31,8 +31,6 @@ public class SendMailsTask {
     private final TemplateEngine templateEngine;
     private final People people;
 
-    private Queue<CountedObject<MimeMessage>> mailsQueue;
-
     @Value("${spring.mail.username}")
     private String fromMail;
     @Value("${newsther.mailing.retry.limit}")
@@ -47,11 +45,11 @@ public class SendMailsTask {
     @Transactional
     @Scheduled(cron = "${newsther.mailing.cron-trigger}")
     public void sendMailsTask() throws MessagingException {
-        this.buildMailTemplates();
+        Queue<CountedObject<MimeMessage>> mailsQueue = this.buildMailTemplates();
 
-        for (CountedObject<MimeMessage> countedMail = this.mailsQueue.poll();
+        for (CountedObject<MimeMessage> countedMail = mailsQueue.poll();
              countedMail != null;
-             countedMail = this.mailsQueue.poll()) {
+             countedMail = mailsQueue.poll()) {
 
             MimeMessage mail = countedMail.getValue();
             try {
@@ -60,18 +58,19 @@ public class SendMailsTask {
             } catch (MailException e) {
                 if (countedMail.getCounter() < retryLimit) {
                     countedMail.incrementCounter();
-                    this.mailsQueue.add(countedMail);
+                    mailsQueue.add(countedMail);
                 }
             }
         }
     }
 
-    private void buildMailTemplates() throws MessagingException {
-        this.mailsQueue = new LinkedList<>();
+    private Queue<CountedObject<MimeMessage>> buildMailTemplates() throws MessagingException {
+        Queue<CountedObject<MimeMessage>> mailsQueue = new LinkedList<>();
         for (Person person: people.findAll()) {
             List<News> newsList = getNewsToSendFor(person);
-            buildMail(person, newsList);
+            mailsQueue.add(new CountedObject<>(buildMail(person, newsList)));
         }
+        return mailsQueue;
     }
 
     private List<News> getNewsToSendFor(Person person) {
@@ -84,7 +83,7 @@ public class SendMailsTask {
                 .toList();
     }
 
-    private void buildMail(Person person, List<News> newsList) throws MessagingException {
+    private MimeMessage buildMail(Person person, List<News> newsList) throws MessagingException {
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
 
@@ -98,6 +97,6 @@ public class SendMailsTask {
 
         mimeMessageHelper.setText(processedString, true);
 
-        this.mailsQueue.add(new CountedObject<>(mimeMessage));
+        return mimeMessage;
     }
 }
