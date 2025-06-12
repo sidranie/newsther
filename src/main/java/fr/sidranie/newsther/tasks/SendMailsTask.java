@@ -1,10 +1,6 @@
 package fr.sidranie.newsther.tasks;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Queue;
-import java.util.Set;
+import java.util.*;
 
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;
@@ -76,13 +72,23 @@ public class SendMailsTask {
     }
 
     private List<News> getNewsToSendFor(Person person) {
-        return person.getSubscriptions()
+        List<News> newsesToSend = new ArrayList<>();
+
+        List<Newsletter> newsletters = person.getSubscriptions()
                 .stream()
                 .map(Subscription::getNewsletter)
-                .map(Newsletter::getNews)
-                .flatMap(Set::stream)
-                .filter(news -> Objects.isNull(news.getSendDate()))
                 .toList();
+
+        List<News> notSentNewses;
+        for (Newsletter newsletter: newsletters) {
+            notSentNewses = newsletter.getNews().stream()
+                    .filter(news -> Objects.isNull(news.getSendDate()))
+                    .sorted(Comparator.comparing(News::getCreationDate))
+                    .toList();
+            newsesToSend.add(notSentNewses.getFirst());
+        }
+
+        return newsesToSend.stream().sorted(Comparator.comparing(News::getCreationDate)).toList();
     }
 
     private MimeMessage buildMail(Person person, List<News> newsList) throws MessagingException {
