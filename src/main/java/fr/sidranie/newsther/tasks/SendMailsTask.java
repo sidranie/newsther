@@ -35,6 +35,8 @@ public class SendMailsTask {
     private String fromMail;
     @Value("${newsther.mailing.retry.limit}")
     private int retryLimit;
+    @Value("${newsther.mailing.mail-subject}")
+    private String mailSubject;
 
     public SendMailsTask(JavaMailSender mailSender, TemplateEngine templateEngine, People people) {
         this.mailSender = mailSender;
@@ -89,7 +91,7 @@ public class SendMailsTask {
 
         mimeMessageHelper.setFrom(fromMail);
         mimeMessageHelper.setTo(person.getEmail());
-        mimeMessageHelper.setSubject("Newsther weekly");
+        mimeMessageHelper.setSubject(this.mailSubject);
 
         Context context = new Context();
         context.setVariable("newsList", newsList);
