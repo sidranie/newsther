@@ -13,10 +13,10 @@ public class News {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false)
     private String content;
 
     @Column(nullable = false)
@@ -28,6 +28,14 @@ public class News {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "newsletter_id", nullable = false)
     private Newsletter newsletter;
+
+    public News() {
+    }
+
+    public News(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
 
     public Long getId() {
         return id;
@@ -77,14 +85,7 @@ public class News {
         this.newsletter = newsletter;
     }
 
-    public String toEmail() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("<h1>")
-                .append(title)
-                .append("</h1>")
-                .append("<p>")
-                .append(content)
-                .append("</p>");
-        return builder.toString();
+    public boolean hasBeenSent() {
+        return sendDate == null;
     }
 }

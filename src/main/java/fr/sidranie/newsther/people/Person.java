@@ -1,9 +1,11 @@
 package fr.sidranie.newsther.people;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import fr.sidranie.newsther.news.News;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import fr.sidranie.newsther.newsletters.Newsletter;
@@ -38,6 +40,22 @@ public class Person implements UserDetails {
 
     @OneToMany(mappedBy = "person", fetch = FetchType.LAZY)
     private Set<Subscription> subscriptions;
+
+    public Person() {
+    }
+
+    public Person(String username,
+                  String email,
+                  String password,
+                  String givenName,
+                  String familyName) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.givenName = givenName;
+        this.familyName = familyName;
+        this.subscriptions = Collections.emptySet();
+    }
 
     public Long getId() {
         return id;
@@ -126,5 +144,9 @@ public class Person implements UserDetails {
 
     public void setSubscriptions(Set<Subscription> subscriptions) {
         this.subscriptions = subscriptions;
+    }
+
+    public boolean hasSubscriptions() {
+        return !subscriptions.isEmpty();
     }
 }

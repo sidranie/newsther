@@ -5,8 +5,6 @@ import fr.sidranie.newsther.newsletters.dtos.CreateNewsletterDto;
 public class NewsletterMapper {
 
     public static Newsletter createNewsletterDtoToNewsletter(CreateNewsletterDto createNewsletterDto) {
-        Newsletter newsletter = new Newsletter();
-        newsletter.setTitle(createNewsletterDto.getTitle().trim());
-        return newsletter;
+        return new Newsletter(createNewsletterDto.getTitle().trim());
     }
 }
