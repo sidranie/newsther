@@ -6,11 +6,15 @@ import java.util.List;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
 import fr.sidranie.newsther.news.dtos.CreateNewsDto;
 import fr.sidranie.newsther.news.dtos.EditNewsDto;
 import fr.sidranie.newsther.newsletters.Newsletter;
 import fr.sidranie.newsther.newsletters.Newsletters;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/news")

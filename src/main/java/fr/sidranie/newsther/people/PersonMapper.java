@@ -1,7 +1,5 @@
 package fr.sidranie.newsther.people;
 
-import java.util.Collections;
-
 import fr.sidranie.newsther.people.dtos.CreatePersonDto;
 
 public class PersonMapper {
