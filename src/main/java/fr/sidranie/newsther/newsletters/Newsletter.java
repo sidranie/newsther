@@ -16,7 +16,7 @@ public class Newsletter {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true, length = 255)
+    @Column(nullable = false, unique = true)
     private String title;
 
     @Column(nullable = false, unique = true)
@@ -31,6 +31,13 @@ public class Newsletter {
 
     @OneToMany(mappedBy = "newsletter", fetch = FetchType.LAZY)
     private Set<News> news;
+
+    public Newsletter() {
+    }
+
+    public Newsletter(String title) {
+        this.title = title;
+    }
 
     public Long getId() {
         return id;

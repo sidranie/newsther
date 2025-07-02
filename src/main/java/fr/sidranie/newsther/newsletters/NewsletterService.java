@@ -2,9 +2,16 @@ package fr.sidranie.newsther.newsletters;
 
 import java.security.Principal;
 import java.text.Normalizer;
+import java.util.AbstractMap;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
+import fr.sidranie.newsther.news.News;
 import org.springframework.stereotype.Service;
 import fr.sidranie.newsther.news.Newses;
 import fr.sidranie.newsther.people.People;

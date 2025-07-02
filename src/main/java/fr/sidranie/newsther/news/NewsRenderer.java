@@ -74,7 +74,7 @@ public class NewsRenderer {
     @GetMapping("/{id}/edit")
     public String renderNewsEditionForm(@PathVariable("id") Long id, Principal principal, Model model) {
         News news = newses.findById(id)
-                .filter(foundNews -> foundNews.getSendDate() == null)
+                .filter(News::hasBeenSent)
                 .orElseThrow(IllegalArgumentException::new);
 
         if (!news.getNewsletter().getCreator().getUsername().equals(principal.getName())) {
@@ -88,16 +88,14 @@ public class NewsRenderer {
     @PostMapping("/{id}/edit")
     public String performNewsEdition(@PathVariable("id") Long id, EditNewsDto editNewsDto, Principal principal, Model model) {
         News news = newses.findById(id)
-                .filter(foundNews -> foundNews.getSendDate() == null)
+                .filter(News::hasBeenSent)
                 .orElseThrow(IllegalArgumentException::new);
 
         if (!news.getNewsletter().getCreator().getUsername().equals(principal.getName())) {
             throw new IllegalAccessError();
         }
 
-        News newsUpdates = new News();
-        newsUpdates.setTitle(editNewsDto.getTitle());
-        newsUpdates.setContent(editNewsDto.getContent());
+        News newsUpdates = new News(editNewsDto.getTitle(), editNewsDto.getContent());
 
         News result = service.updateNews(news, newsUpdates);
 

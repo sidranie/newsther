@@ -83,8 +83,7 @@ public class NewsletterRenderer {
             throw new IllegalAccessError();
         }
 
-        Newsletter newsletterUpdates = new Newsletter();
-        newsletterUpdates.setTitle(editNewsletterDto.getTitle());
+        Newsletter newsletterUpdates = new Newsletter(editNewsletterDto.getTitle());
 
         Newsletter result = service.editNewsletter(newsletter, newsletterUpdates);
 

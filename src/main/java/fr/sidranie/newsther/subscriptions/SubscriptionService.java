@@ -30,10 +30,7 @@ public class SubscriptionService {
         Newsletter newsletter = newsletters.findById(newsletterId)
                 .orElseThrow(IllegalArgumentException::new);
 
-        Subscription subscription = new Subscription();
-        subscription.setSince(Instant.now());
-        subscription.setPerson(person);
-        subscription.setNewsletter(newsletter);
+        Subscription subscription = new Subscription(Instant.now(), person, newsletter);
 
         subscriptions.save(subscription);
 

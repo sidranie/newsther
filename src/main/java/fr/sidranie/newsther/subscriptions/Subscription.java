@@ -28,6 +28,15 @@ public class Subscription {
     @JoinColumn(name = "newsletter_id", nullable = false)
     private Newsletter newsletter;
 
+    public Subscription() {
+    }
+
+    public Subscription(Instant since, Person person, Newsletter newsletter) {
+        this.since = since;
+        this.person = person;
+        this.newsletter = newsletter;
+    }
+
     public Long getId() {
         return id;
     }

@@ -85,15 +85,12 @@ public class PersonRenderer {
             throw new IllegalAccessError("You cannot edit this person.");
         }
 
-        Person personUpdates = new Person();
-        personUpdates.setUsername(editPersonDto.getUsername());
-        personUpdates.setEmail(editPersonDto.getEmail());
-        personUpdates.setGivenName(editPersonDto.getGivenName());
-        personUpdates.setFamilyName(editPersonDto.getFamilyName());
-
-        if (editPersonDto.getPassword() != null && !editPersonDto.getPassword().isEmpty()) {
-            personUpdates.setPassword(editPersonDto.getPassword());
-        }
+        Person personUpdates = new Person(
+                editPersonDto.getUsername(),
+                editPersonDto.getEmail(),
+                editPersonDto.getPassword(),
+                editPersonDto.getGivenName(),
+                editPersonDto.getFamilyName());
 
         service.updatePerson(person, personUpdates);
         return "redirect:/perform_logout";
