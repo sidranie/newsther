@@ -1,8 +1,14 @@
 package fr.sidranie.newsther.tasks;
 
 import java.time.Instant;
-import java.util.*;
+import java.util.AbstractMap;
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.Queue;
 import java.util.stream.Collectors;
 
 import jakarta.transaction.Transactional;
@@ -15,7 +21,6 @@ import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import fr.sidranie.newsther.news.News;
-import fr.sidranie.newsther.news.Newses;
 import fr.sidranie.newsther.newsletters.Newsletter;
 import fr.sidranie.newsther.newsletters.Newsletters;
 import fr.sidranie.newsther.people.People;
@@ -50,9 +55,8 @@ public class SendMailsTask {
     @Transactional
     @Scheduled(cron = "${newsther.mailing.cron-trigger}")
     public void sendMailsTask() throws MessagingException {
-        Map<Long, News> newsesToSend = this.findNewsesToSend();
-        
-        // Send mails
+        Map<Long, News> sendableNewses = this.findNewsesToSend();
+
         Queue<CountedObject<Person>> peopleQueue = this.people.findAll().stream()
             .filter(person -> !person.getSubscriptions().isEmpty())
             .sorted(Comparator.comparing(Person::getId))
@@ -63,83 +67,48 @@ public class SendMailsTask {
              countedPerson != null;
              countedPerson = peopleQueue.poll()) {
 
-            List<Long> subcribedNewsletters = countedPerson.getValue()
+            List<Long> subscribedNewsletters = countedPerson.getValue()
                     .getSubscriptions()
                     .stream()
                     .map(Subscription::getNewsletter)
                     .map(Newsletter::getId)
                     .toList();
-            // Find newses to send
-        }
 
-        // Update newses send date
-        Instant now = Instant.now();
-        newsesToSend.values().forEach(news -> news.setSendDate(now));
-        
-        Queue<CountedObject<MimeMessage>> mailsQueue = this.buildMailTemplates();
+            List<News> newsInMail = sendableNewses.entrySet().stream()
+                    .filter(entry -> subscribedNewsletters.contains(entry.getKey()))
+                    .map(Entry::getValue)
+                    .toList();
 
-        for (CountedObject<MimeMessage> countedMail = mailsQueue.poll();
-             countedMail != null;
-             countedMail = mailsQueue.poll()) {
-
-            MimeMessage mail = countedMail.getValue();
+            MimeMessage mail = buildMail(countedPerson.getValue(), newsInMail);
             try {
                 this.mailSender.send(mail);
-
             } catch (MailException e) {
-                if (countedMail.getCounter() < retryLimit) {
-                    countedMail.incrementCounter();
-                    mailsQueue.add(countedMail);
+                if (countedPerson.getCounter() < retryLimit) {
+                    countedPerson.incrementCounter();
+                    peopleQueue.add(countedPerson);
                 }
             }
         }
+
+        Instant now = Instant.now();
+        sendableNewses.values().forEach(news -> news.setSendDate(now));
     }
 
     private Map<Long, News> findNewsesToSend() {
-        Map<Long, News> newses = this.newsletters.findAll()
+        return this.newsletters.findAll()
             .stream()
             .filter(newsletter -> !newsletter.getNews().isEmpty())
             .map(newsletter -> { // Get newses to send. Identified by their newsletter id
-                News newsToSend = newsletter.getNews()
+                List<News> notSentNewses = newsletter.getNews()
                     .stream()
                     .filter(news -> Objects.isNull(news.getSendDate()))
                     .sorted(Comparator.comparing(News::getCreationDate))
-                    .toList()
-                    .getFirst();
-                return new AbstractMap.SimpleEntry<Long, News>(newsletter.getId(), newsToSend);
-            })
-            .sorted(Comparator.comparing(entry -> entry.getValue().getCreationDate())) // Sort entries by the news creation date
-            .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
-        return newses;
-    }
-
-    private Queue<CountedObject<MimeMessage>> buildMailTemplates() throws MessagingException {
-        Queue<CountedObject<MimeMessage>> mailsQueue = new LinkedList<>();
-        for (Person person: people.findAll()) {
-            List<News> newsList = getNewsToSendFor(person);
-            mailsQueue.add(new CountedObject<>(buildMail(person, newsList)));
-        }
-        return mailsQueue;
-    }
-
-    private List<News> getNewsToSendFor(Person person) {
-        List<News> newsesToSend = new ArrayList<>();
-
-        List<Newsletter> newsletters = person.getSubscriptions()
-                .stream()
-                .map(Subscription::getNewsletter)
-                .toList();
-
-        List<News> notSentNewses;
-        for (Newsletter newsletter: newsletters) {
-            notSentNewses = newsletter.getNews().stream()
-                    .filter(news -> Objects.isNull(news.getSendDate()))
-                    .sorted(Comparator.comparing(News::getCreationDate))
                     .toList();
-            newsesToSend.add(notSentNewses.getFirst());
-        }
-
-        return newsesToSend.stream().sorted(Comparator.comparing(News::getCreationDate)).toList();
+                return notSentNewses.isEmpty() ? null :
+                        new AbstractMap.SimpleEntry<>(newsletter.getId(), notSentNewses.getFirst());
+            })
+            .filter(Objects::nonNull)
+            .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
     }
 
     private MimeMessage buildMail(Person person, List<News> newsList) throws MessagingException {
