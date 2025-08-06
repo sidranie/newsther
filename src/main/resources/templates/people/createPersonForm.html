@@ -1,17 +1,27 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Newsther</title>
 </head>
 <body>
 <h1>Create person</h1>
-<form action="/people/create" method="post">
-  <input type="text" name="username" placeholder="Username">
-  <input type="text" name="givenName" placeholder="Given name">
-  <input type="text" name="familyName" placeholder="Family name">
-  <input type="text" name="email" placeholder="Email">
-  <input type="text" name="password" placeholder="Password">
+
+<p th:if="${error}" th:text="${error}"></p>
+
+<form action="/people/create" method="post" th:object="${createPersonDto}">
+  <input th:field="*{username}" name="username" placeholder="Username" type="text" required>
+  <input th:field="*{givenName}" name="givenName" placeholder="Given name" type="text" required>
+  <input th:field="*{familyName}" name="familyName" placeholder="Family name" type="text" required>
+  <input th:field="*{email}" name="email" placeholder="Email" type="text" required>
+  <input th:field="*{password}"
+         name="password"
+         placeholder="Password"
+         type="password"
+         minlength="10"
+         pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[,?;.:\/!§&~&quot;#'{([\-|`_\\\^)\]=+}$£¤%*<>]).*"
+         required
+  >
   <button type="submit">Register</button>
 </form>
 </body>

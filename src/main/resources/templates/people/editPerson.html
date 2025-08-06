@@ -24,7 +24,12 @@
     </label>
     <label>
         Password
-        <input type="text" name="password"/>
+        <input type="password"
+               name="password"
+               minlength="10"
+               pattern="/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[,?;.:\/!§&~&quot;#'{([\-|`_\\\^)\]=+}$£¤%*<>]).*"
+               required
+        />
     </label>
     <button type="submit">Save</button>
 </form>
