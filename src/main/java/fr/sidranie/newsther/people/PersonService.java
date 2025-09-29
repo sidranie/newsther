@@ -1,5 +1,6 @@
 package fr.sidranie.newsther.people;
 
+import fr.sidranie.newsther.password.PasswordConstraintValidator;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsPasswordService;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -27,16 +28,22 @@ public class PersonService implements UserDetailsService, UserDetailsPasswordSer
         this.passwordEncoder = passwordEncoder;
     }
 
-    public void registerPerson(Person person) {
+    public void registerPerson(Person person) throws IllegalArgumentException {
+        if (!PasswordConstraintValidator.isValid(person.getPassword())) {
+            throw new IllegalArgumentException("Your password does not match the requirements");
+        }
         person.setId(null);
         person.setPassword(passwordEncoder.encode(person.getPassword()));
         people.save(person);
     }
 
-    public Person updatePerson(Person person, Person personUpdates) {
+    public Person updatePerson(Person person, Person personUpdates) throws IllegalArgumentException {
         person.setUsername(personUpdates.getUsername());
         person.setEmail(personUpdates.getEmail());
         if (personUpdates.getPassword() != null && !personUpdates.getPassword().isEmpty()) {
+            if (!PasswordConstraintValidator.isValid(person.getPassword())) {
+                throw new IllegalArgumentException("Your password does not match the requirements");
+            }
             person.setPassword(passwordEncoder.encode(personUpdates.getPassword()));
         }
         person.setGivenName(personUpdates.getGivenName());

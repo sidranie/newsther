@@ -54,14 +54,21 @@ public class PersonRenderer {
     }
 
     @GetMapping("/create")
-    public String renderPersonCreationForm() {
+    public String renderPersonCreationForm(Model model) {
+        model.addAttribute("createPersonDto", new CreatePersonDto());
         return "people/createPersonForm";
     }
 
     @PostMapping("/create")
-    public String performPersonCreation(CreatePersonDto createPersonDto) {
+    public String performPersonCreation(CreatePersonDto createPersonDto, Model model) {
         Person person = PersonMapper.createPersonDtoToPerson(createPersonDto);
-        service.registerPerson(person);
+        try {
+            service.registerPerson(person);
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("createPersonDto", createPersonDto);
+            model.addAttribute("error", e.getMessage());
+            return "people/createPersonForm";
+        }
         return "redirect:/login";
     }
 
